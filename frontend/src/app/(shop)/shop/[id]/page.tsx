@@ -25,7 +25,7 @@ export default function ProductDetail() {
                 // If app.js mounts shopRoutes at /, then it's /item/:id
                 // But ProductCard uses /shop/item/:id in fetch.
                 // Let's assume /shop/item/:id for now or adjust based on app.js check
-                const res = await fetch(`http://localhost:3000/shop/item/${id}`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/item/${id}`);
                 const data = await res.json();
                 if (res.ok) {
                     setProduct(data.product);
@@ -56,7 +56,7 @@ export default function ProductDetail() {
         }
 
         try {
-            const res = await fetch("http://localhost:3000/shop/cart", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

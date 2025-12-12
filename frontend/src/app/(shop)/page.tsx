@@ -10,7 +10,7 @@ const fallbackProducts = [
 
 async function getProducts() {
     try {
-        const res = await fetch('http://localhost:3000/home', { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home`, { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch');
         const collections = await res.json();
         return collections.map((item: any) => ({

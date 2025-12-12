@@ -30,7 +30,7 @@ export default function ProductCard({ id, category, name, price, imageFront, ima
         }
 
         try {
-            const res = await fetch("http://localhost:3000/shop/cart", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
