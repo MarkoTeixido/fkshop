@@ -26,6 +26,32 @@ class ProductService {
     };
   }
 
+  async getRelatedProducts(productId, categoryId) {
+    // Avoid circular dependency if I needed Op here, but I can pass query obj to repo
+    // I need Op.ne. I can try requiring sequelize or just passing the object if repo handles it.
+    // Repo findAll takes raw sequelize where clause.
+    const { Op } = require('sequelize');
+
+    const related = await productRepository.findAll({
+      where: {
+        category_id: categoryId,
+        product_id: { [Op.ne]: productId }, // Exclude current product
+        is_active: true
+      },
+      limit: 10, // Fetch a few
+      order: [['created_at', 'DESC']]
+    });
+
+    return related.map(p => {
+      const plain = p.get({ plain: true });
+      return {
+        ...plain,
+        licence: plain.licence ? plain.licence.licence_name : null, // Flattening
+        category: plain.category ? plain.category.category_name : null
+      };
+    });
+  }
+
   async createProduct(data) {
     // Business Logic: Check if SKU exists? (Repository might throw unique constraint error)
     // For now, simple pass-through

@@ -1,98 +1,27 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { FaCircleXmark } from "react-icons/fa6";
-import { useAuth } from "@/context/AuthContext";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-interface Product {
-    product_id: number;
-    product_name: string;
-    price: string;
-    image_front: string;
-    category: { category_name: string };
-}
-
-interface CartItem {
-    cart_item_id: number;
-    quantity: number;
-    product_id: number;
-    Product: Product;
-}
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/hooks/useCart";
+import CartItem from "@/components/cart/CartItem";
+import Loader from "@/components/ui/Loader";
 
 export default function Cart() {
-    const { token, user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const { cartItems, loading, error, fetchCart, updateQuantity, removeItem, subtotal } = useCart();
     const router = useRouter();
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const fetchCart = async () => {
-        if (!token) return;
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setCartItems(data.CartItems || []);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
-        if (!token && !loading) {
-            // Redirect or show login message
-        } else {
+        if (isAuthenticated) {
             fetchCart();
         }
-    }, [token]);
-
-    const updateQuantity = async (productId: number, newQuantity: number) => {
-        if (newQuantity < 1) return;
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart/${productId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ quantity: newQuantity })
-            });
-            if (res.ok) {
-                fetchCart();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const removeItem = async (productId: number) => {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart/${productId}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (res.ok) {
-                fetchCart();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    }, [isAuthenticated, fetchCart]);
 
     const handleCheckout = () => {
         router.push("/checkout");
     };
 
-    const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.Product.price) * item.quantity), 0);
-    const total = subtotal; // Add shipping logic if needed
-
-    if (loading) return <div className="container py-[8rem] text-center text-[2rem]">Cargando carrito...</div>;
+    if (loading && cartItems.length === 0) return <div className="container py-[8rem]"><Loader /></div>;
 
     if (!user) return (
         <div className="container py-[8rem] text-center">
@@ -120,35 +49,12 @@ export default function Cart() {
                         </div>
 
                         {cartItems.map((item) => (
-                            <div key={item.cart_item_id} className="bg-light-bg rounded-[10px] p-[2rem] shadow-md grid grid-cols-1 md:grid-cols-[3fr_1fr_1fr_auto] gap-[2rem] items-center relative">
-                                <div className="flex items-center gap-[2rem]">
-                                    <Image src={item.Product.image_front || "/placeholder.webp"} alt={item.Product.product_name} width={100} height={100} className="w-[80px] h-auto object-contain" />
-                                    <div className="flex flex-col gap-[0.4rem]">
-                                        <h3 className="text-[1.8rem] font-bold uppercase">{item.Product.product_name}</h3>
-                                        <p className="text-[1.4rem] font-medium text-gray-500">{item.Product.category?.category_name || "Coleccionable"}</p>
-                                        <p className="text-[1.4rem] font-medium">PRECIO: $ {item.Product.price}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        value={item.quantity}
-                                        readOnly
-                                        className="w-[6rem] text-center border border-dark rounded-[10px] py-[0.4rem] text-[1.6rem]"
-                                    />
-                                    <div className="flex flex-col gap-1">
-                                        <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} className="bg-dark-bg text-white w-[2rem] h-[2rem] rounded-[4px] flex items-center justify-center text-[1.2rem] hover:opacity-90 transition-opacity">+</button>
-                                        <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} className="bg-dark-bg text-white w-[2rem] h-[2rem] rounded-[4px] flex items-center justify-center text-[1.2rem] hover:opacity-90 transition-opacity">-</button>
-                                    </div>
-                                </div>
-
-                                <p className="text-[1.8rem] font-medium text-primary">$ {(parseFloat(item.Product.price) * item.quantity).toFixed(2)}</p>
-
-                                <button onClick={() => removeItem(item.product_id)} className="text-secondary hover:text-red-500 transition-colors absolute top-4 right-4 md:static">
-                                    <FaCircleXmark size={24} />
-                                </button>
-                            </div>
+                            <CartItem
+                                key={item.cart_item_id}
+                                item={item}
+                                onUpdateQuantity={updateQuantity}
+                                onRemove={removeItem}
+                            />
                         ))}
                     </div>
                 )}
@@ -172,7 +78,7 @@ export default function Cart() {
                         </div>
                         <div className="p-[2rem] flex justify-between items-center text-[2.4rem] font-bold text-primary">
                             <p>TOTAL</p>
-                            <p>$ {total.toFixed(2)}</p>
+                            <p>$ {subtotal.toFixed(2)}</p>
                         </div>
                     </div>
                     <button onClick={handleCheckout} className="bg-dark-bg text-white w-full max-w-[600px] py-[1.6rem] text-[1.8rem] font-medium hover:bg-primary-900 transition-colors uppercase">FINALIZAR COMPRA</button>

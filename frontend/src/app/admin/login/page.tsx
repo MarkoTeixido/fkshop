@@ -26,9 +26,9 @@ export default function AdminLoginPage() {
 
             if (res.ok) {
                 // Login successful
-                login(data.accessToken, data.refreshToken, data.user);
-                // Redirect handled by Layout or manually here
-                router.push('/admin/dashboard');
+                login(data.accessToken, (data as any).user || data.user, '/admin/dashboard');
+                // Router push handled in context now, or we can keep it here if context didn't have it, 
+                // but nice to have one source of truth.
             } else {
                 // Silent fail/Generic message
                 setError('Credenciales inválidas');

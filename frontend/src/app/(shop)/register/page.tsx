@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { authService } from "@/services/auth.service";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Register() {
     const router = useRouter();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
@@ -26,6 +29,7 @@ export default function Register() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
 
         if (formData.password !== formData.repPassword) {
             setError("Las contraseñas no coinciden");
@@ -34,30 +38,30 @@ export default function Register() {
 
         try {
             const payload = {
-                ...formData,
+                name: formData.name,
+                lastname: formData.lastname,
+                email: formData.email,
+                password: formData.password,
                 password_confirmation: formData.repPassword
             };
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+            const data = await authService.register(payload as any);
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.errors?.[0]?.msg || "Error al registrarse");
-                return;
+            if (data.token) {
+                setSuccess("Usuario registrado exitosamente. Ingresando...");
+                setTimeout(() => {
+                    login(data.token, data.user);
+                }, 2000);
+            } else {
+                setSuccess("Registro exitoso. Por favor inicia sesión.");
+                setTimeout(() => {
+                    router.push("/login");
+                }, 2000);
             }
 
-            setSuccess("Usuario registrado exitosamente. Redirigiendo a login...");
-            setTimeout(() => {
-                router.push("/login");
-            }, 2000);
-
-        } catch (err) {
-            setError("Error de conexión");
+        } catch (err: any) {
+            console.error(err);
+            setError(err.response?.data?.message || err.message || "Error al registrarse");
         }
     };
 
@@ -69,8 +73,8 @@ export default function Register() {
                     <p className="text-[1.8rem]">Completa el formulario para ser parte del mundo de los Funkos</p>
                 </div>
 
-                {error && <div className="bg-red-100 text-red-700 p-4 rounded">{error}</div>}
-                {success && <div className="bg-green-100 text-green-700 p-4 rounded">{success}</div>}
+                {error && <div className="bg-red-100 text-red-700 p-4 rounded text-[1.6rem]">{error}</div>}
+                {success && <div className="bg-green-100 text-green-700 p-4 rounded text-[1.6rem]">{success}</div>}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-[2rem]">
                     <div className="grid grid-cols-[1fr_2fr] gap-[2rem] items-center">

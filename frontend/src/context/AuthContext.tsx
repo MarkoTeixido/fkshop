@@ -2,18 +2,14 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-
-interface User {
-    id: number;
-    email: string;
-    role: string;
-    name: string;
-}
+import { User } from "@/types/auth.types";
+import { authUtils } from "@/utils/auth.utils";
 
 interface AuthContextType {
     user: User | null;
     token: string | null;
-    login: (token: string, refreshToken: string, user: User) => void;
+    isAuthenticated: boolean;
+    login: (token: string, user: User, redirectPath?: string) => void;
     logout: () => void;
     isLoading: boolean;
 }
@@ -27,36 +23,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        const storedUser = localStorage.getItem("user");
+        const initAuth = () => {
+            const storedToken = authUtils.getToken();
+            const storedUser = authUtils.getUser();
 
-        if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
-        }
-        setIsLoading(false);
+            if (storedToken && storedUser) {
+                setToken(storedToken);
+                setUser(storedUser);
+            }
+            setIsLoading(false);
+        };
+        initAuth();
     }, []);
 
-    const login = (newToken: string, newRefreshToken: string, newUser: User) => {
-        localStorage.setItem("token", newToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-        localStorage.setItem("user", JSON.stringify(newUser));
+    const login = (newToken: string, newUser: User, redirectPath: string = "/") => {
+        // Service should have already set localStorage, but we ensure it here or rely on service
+        // For safety/sync, we set it here too if not using service directly for storage, 
+        // but since we defined authUtils to handle storage, we should use it or assume correct usage.
+        // We will force update authUtils to be safe.
+        authUtils.setToken(newToken);
+        authUtils.setUser(newUser);
+
         setToken(newToken);
         setUser(newUser);
-        router.push("/");
+        router.push(redirectPath);
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
+        authUtils.removeToken();
         setToken(null);
         setUser(null);
         router.push("/login");
     };
 
+    const isAuthenticated = !!token;
+
     return (
-        <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

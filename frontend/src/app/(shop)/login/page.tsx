@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/services/auth.service";
 
 export default function Login() {
     const { login } = useAuth();
@@ -13,24 +14,14 @@ export default function Login() {
         e.preventDefault();
         setError(""); // Clear previous errors
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                // Handle different error structures if possible
-                setError(data.errors?.[0]?.msg || "Error al iniciar sesión");
-                return;
-            }
-
-            login(data.accessToken, data.refreshToken, data.user);
-        } catch (err) {
-            setError("Error de conexión con el servidor");
+            const data = await authService.login(formData.email, formData.password);
+            // login function from context updates state and redirects
+            login(data.token, data.user);
+        } catch (err: any) {
             console.error(err);
+            // Setup robust error from service (standardized in api layer ideally)
+            // If service throws generic error, display it
+            setError(err.response?.data?.message || err.message || "Error al iniciar sesión");
         }
     };
 

@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import ProductCard from "@/components/ProductCard";
+import ShopSidebar from '@/components/shop/ShopSidebar';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import { useProducts } from '@/hooks/useProducts';
+import Loader from '@/components/ui/Loader';
 
 export default function Shop() {
-    const [products, setProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { products, loading, fetchProducts } = useProducts();
 
     // Filters
     const [search, setSearch] = useState("");
@@ -15,7 +17,6 @@ export default function Shop() {
     const [filterNew, setFilterNew] = useState(false);
     const [filterOffers, setFilterOffers] = useState(false);
     const [filterSpecial, setFilterSpecial] = useState(false);
-    const [filterFav, setFilterFav] = useState(false); // Visual only for now
 
     // Debounce search
     const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -28,152 +29,33 @@ export default function Shop() {
     }, [search]);
 
     useEffect(() => {
-        fetchProducts();
-    }, [debouncedSearch, sort, minPrice, maxPrice, filterNew, filterOffers, filterSpecial]);
+        const params: Record<string, string | number> = {};
+        if (debouncedSearch) params.search = debouncedSearch;
+        if (sort) params.sort = sort;
+        if (minPrice) params.min = minPrice;
+        if (maxPrice) params.max = maxPrice;
+        if (filterNew) params.new = 'true';
+        if (filterOffers) params.offers = 'true';
+        if (filterSpecial) params.special = 'true';
 
-    const fetchProducts = async () => {
-        setLoading(true);
-        try {
-            const queryParams = new URLSearchParams();
-            if (debouncedSearch) queryParams.append('search', debouncedSearch);
-            if (sort) queryParams.append('sort', sort);
-            if (minPrice) queryParams.append('min', minPrice);
-            if (maxPrice) queryParams.append('max', maxPrice);
-            if (filterNew) queryParams.append('new', 'true');
-            if (filterOffers) queryParams.append('offers', 'true');
-            if (filterSpecial) queryParams.append('special', 'true');
-
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop?${queryParams.toString()}`);
-            if (res.ok) {
-                const data = await res.json();
-                setProducts(data);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            setDebouncedSearch(search);
-        }
-    };
+        fetchProducts(params);
+    }, [fetchProducts, debouncedSearch, sort, minPrice, maxPrice, filterNew, filterOffers, filterSpecial]);
 
     return (
         <div className="standard-container py-[4rem] flex flex-col md:flex-row gap-[4rem] text-dark">
-            <aside className="w-full md:w-[250px] shrink-0 space-y-[4rem]">
-                {/* Search */}
-                <div className="space-y-[1.2rem]">
-                    <label className="text-[1.8rem] font-medium block" htmlFor="search">BUSCAR</label>
-                    <div className="relative">
-                        <input
-                            className="w-full border-2 border-primary rounded-[50px] px-[1.6rem] py-[0.8rem] text-[1.6rem] placeholder:text-gray-400 focus:outline-none"
-                            type="text"
-                            name="buscar"
-                            placeholder="item o categoria"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
-                </div>
-
-                {/* Order */}
-                <div className="space-y-[1.2rem]">
-                    <label className="text-[1.8rem] font-medium block" htmlFor="order">ORDENAR POR</label>
-                    <select
-                        className="w-full border-2 border-primary rounded-[50px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white focus:outline-none cursor-pointer"
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value)}
-                    >
-                        <option value="">Defecto</option>
-                        <option value="price-ascending">Menor Precio</option>
-                        <option value="price-descending">Mayor Precio</option>
-                        <option value="alpha-ascending">A-Z</option>
-                        <option value="alpha-descending">Z-A</option>
-                    </select>
-                </div>
-
-                {/* Price */}
-                <div className="space-y-[1.2rem]">
-                    <label className="text-[1.8rem] font-medium block" htmlFor="price">PRECIO</label>
-                    <div className="flex items-center gap-4 justify-between">
-                        <div className="flex items-center gap-2">
-                            <span className="text-[1.4rem]">MIN</span>
-                            <input
-                                className="w-[7rem] border border-gray-300 rounded px-2 py-1 text-[1.4rem]"
-                                type="number"
-                                placeholder="0"
-                                min="0"
-                                value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)}
-                            />
-                        </div>
-                        <span className="text-[1.4rem]">-</span>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[1.4rem]">MAX</span>
-                            <input
-                                className="w-[7rem] border border-gray-300 rounded px-2 py-1 text-[1.4rem]"
-                                type="number"
-                                placeholder="0"
-                                min="0"
-                                value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Filter */}
-                <div className="space-y-[1.2rem]">
-                    <label className="text-[1.8rem] font-medium block" htmlFor="filter">FILTRAR</label>
-                    <div className="space-y-[0.8rem]">
-                        <div className="flex items-center gap-[0.8rem]">
-                            <input
-                                type="checkbox"
-                                className="w-[1.8rem] h-[1.8rem] accent-primary cursor-pointer"
-                                checked={filterNew}
-                                onChange={(e) => setFilterNew(e.target.checked)}
-                            />
-                            <label className="text-[1.6rem]">NUEVOS</label>
-                        </div>
-                        <div className="flex items-center gap-[0.8rem]">
-                            <input
-                                type="checkbox"
-                                className="w-[1.8rem] h-[1.8rem] accent-primary cursor-pointer"
-                                checked={filterOffers}
-                                onChange={(e) => setFilterOffers(e.target.checked)}
-                            />
-                            <label className="text-[1.6rem]">OFERTAS</label>
-                        </div>
-                        <div className="flex items-center gap-[0.8rem]">
-                            <input
-                                type="checkbox"
-                                className="w-[1.8rem] h-[1.8rem] accent-primary cursor-pointer"
-                                checked={filterSpecial}
-                                onChange={(e) => setFilterSpecial(e.target.checked)}
-                            />
-                            <label className="text-[1.6rem]">EDICIÓN ESPECIAL</label>
-                        </div>
-                        <div className="flex items-center gap-[0.8rem]">
-                            <input
-                                type="checkbox"
-                                className="w-[1.8rem] h-[1.8rem] accent-primary cursor-pointer"
-                                checked={filterFav}
-                                onChange={(e) => setFilterFav(e.target.checked)}
-                                disabled // Feature not implemented yet
-                            />
-                            <label className="text-[1.6rem] text-gray-400">FAVORITOS</label>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+            <ShopSidebar
+                search={search} setSearch={setSearch}
+                sort={sort} setSort={setSort}
+                minPrice={minPrice} setMinPrice={setMinPrice}
+                maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+                filterNew={filterNew} setFilterNew={setFilterNew}
+                filterOffers={filterOffers} setFilterOffers={setFilterOffers}
+                filterSpecial={filterSpecial} setFilterSpecial={setFilterSpecial}
+            />
 
             <div className="flex-1">
                 {loading ? (
-                    <div className="text-center text-[2rem] py-10">Cargando productos...</div>
+                    <Loader />
                 ) : products.length === 0 ? (
                     <div className="text-center text-[2rem] py-10">No se encontraron productos.</div>
                 ) : (
@@ -182,12 +64,12 @@ export default function Shop() {
                             <ProductCard
                                 key={p.product_id}
                                 id={p.product_id}
-                                category={p.Licence ? p.Licence.licence_name : 'GENERIC'}
+                                category={(p as any).Licence ? (p as any).Licence.licence_name : 'GENERIC'}
                                 name={p.product_name}
-                                price={`$ ${p.price}`}
+                                price={p.price}
                                 imageFront={p.image_front || '/placeholder.png'}
                                 imageBack={p.image_back || '/placeholder.png'}
-                                tag={p.discount > 0 ? `${p.discount}% OFF` : 'NUEVO'}
+                                tag={(p.discount !== null && p.discount > 0) ? `${p.discount}% OFF` : 'NUEVO'}
                                 installments={p.dues ? `${p.dues} CUOTAS SIN INTERÉS` : undefined}
                                 stock={p.stock}
                             />

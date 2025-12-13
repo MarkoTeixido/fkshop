@@ -11,7 +11,9 @@ class ProductRepository {
                 { model: category, attributes: ['category_name'] },
                 { model: licence, attributes: ['licence_name'] }
             ],
-            order: options.order || []
+            order: options.order || [],
+            limit: options.limit,
+            offset: options.offset
         });
     }
 

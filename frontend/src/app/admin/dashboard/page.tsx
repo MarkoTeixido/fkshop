@@ -1,84 +1,40 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { FaMagnifyingGlass, FaPlus } from "react-icons/fa6";
-import { PiPencilSimpleLineDuotone, PiTrashSimpleDuotone } from "react-icons/pi";
-import Swal from 'sweetalert2';
+import { FaPlus } from "react-icons/fa6";
+import { useAdminDashboard } from '@/hooks/useAdminDashboard';
+import SearchInput from '@/components/ui/SearchInput';
+import ProductTable from '@/components/admin/ProductTable';
+import Loader from '@/components/ui/Loader';
 
 export default function AdminDashboard() {
-    const { token } = useAuth();
-    const [products, setProducts] = useState<any[]>([]);
+    const { products, loading, error, deleteProduct } = useAdminDashboard();
     const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (token) fetchProducts();
-    }, [token]);
+    const filteredProducts = products.filter(p => {
+        const lowerTerm = searchTerm.toLowerCase();
+        return (
+            p.product_name.toLowerCase().includes(lowerTerm) ||
+            p.sku.toLowerCase().includes(lowerTerm) ||
+            // Handle optional category name safely
+            (p as any).Category?.category_name?.toLowerCase().includes(lowerTerm)
+        );
+    });
 
-    const fetchProducts = async () => {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (res.ok) setProducts(data);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = (id: number) => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esta acción",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/products/${id}`, {
-                        method: "DELETE",
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (res.ok) {
-                        setProducts(products.filter(p => p.product_id !== id));
-                        Swal.fire('Eliminado!', 'El producto ha sido eliminado.', 'success');
-                    } else {
-                        const data = await res.json();
-                        Swal.fire('Error', data.error || 'No se pudo eliminar el producto.', 'error');
-                    }
-                } catch (error) {
-                    console.error(error);
-                    Swal.fire('Error', 'Error de conexión al eliminar', 'error');
-                }
-            }
-        });
-    };
-
-    if (loading) return <div className="text-center py-10 text-[1.6rem]">Cargando productos...</div>;
+    if (loading) return <Loader />;
 
     return (
         <div className="text-dark">
+            {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                    <strong className="font-bold">Error:</strong>
+                    <span className="block sm:inline"> {error}</span>
+                </div>
+            )}
+
             {/* Search */}
-            <div className="flex items-center gap-4 mb-[4rem] max-w-[600px]">
-                <FaMagnifyingGlass size={24} />
-                <input
-                    className="w-full border-2 border-primary rounded-[50px] px-[1.6rem] py-[0.8rem] text-[1.6rem] placeholder:text-gray-400 focus:outline-none"
-                    type="text"
-                    placeholder="código, nombre o categoria"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="mb-[4rem] max-w-[600px]">
+                <SearchInput onSearch={setSearchTerm} placeholder="código, nombre o categoria" />
             </div>
 
             {/* Header */}
@@ -93,43 +49,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto">
-                <table className="w-full text-left text-[1.6rem] min-w-[600px]">
-                    <thead>
-                        <tr>
-                            <th className="py-4 font-bold uppercase text-dark w-[5%]">ID</th>
-                            <th className="py-4 font-bold uppercase text-dark w-[10%]">Código</th>
-                            <th className="py-4 font-bold uppercase text-dark w-[35%]">Nombre del Producto</th>
-                            <th className="py-4 font-bold uppercase text-dark w-[25%]">Categoria</th>
-                            <th className="py-4 font-bold uppercase text-dark w-[15%]">Stock</th>
-                            <th className="py-4 w-[10%]"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="font-medium text-[1.4rem]">
-                        {products.filter(p =>
-                            p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            (p.Category?.category_name || '').toLowerCase().includes(searchTerm.toLowerCase())
-                        ).map((p) => (
-                            <tr key={p.product_id} className="border-t border-gray-300">
-                                <td className="py-4">#{p.product_id}</td>
-                                <td className="py-4">{p.sku}</td>
-                                <td className="py-4">{p.product_name}</td>
-                                <td className="py-4">{p.Category?.category_name || 'N/A'}</td>
-                                <td className="py-4">{p.stock}</td>
-                                <td className="py-4 flex gap-4">
-                                    <Link href={`/admin/products/${p.product_id}/edit`} className="hover:scale-110 transition-transform p-2 rounded-full hover:bg-blue-50">
-                                        <PiPencilSimpleLineDuotone size={26} className="text-[#4F46E5]" />
-                                    </Link>
-                                    <button onClick={() => handleDelete(p.product_id)} className="hover:scale-110 transition-transform p-2 rounded-full hover:bg-red-50">
-                                        <PiTrashSimpleDuotone size={26} className="text-[#E11D48]" />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            <ProductTable products={filteredProducts} onDelete={deleteProduct} />
         </div>
     );
 }

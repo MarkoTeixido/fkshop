@@ -11,15 +11,21 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 interface ProductSliderProps {
+    title?: string;
     products: any[];
 }
 
-export default function ProductSlider({ products }: ProductSliderProps) {
+export default function ProductSlider({ title, products }: ProductSliderProps) {
     const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null);
     const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
     return (
         <div className="product-slider-container relative">
+            {title && (
+                <h2 className="text-[3.2rem] font-bold uppercase text-dark mb-[3rem] ml-4 md:ml-0 font-raleway">
+                    {title}
+                </h2>
+            )}
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={24}

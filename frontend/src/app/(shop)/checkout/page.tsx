@@ -5,13 +5,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Swal from "sweetalert2";
+import { useCart } from "@/hooks/useCart";
+import Loader from "@/components/ui/Loader";
 
 export default function CheckoutPage() {
-    const { token, user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const router = useRouter();
-    const [loading, setLoading] = useState(true);
-    const [cartItems, setCartItems] = useState<any[]>([]);
-    const [total, setTotal] = useState(0);
+    const { cartItems, subtotal, checkout, fetchCart, loading } = useCart(); // fetchCart to load items on mount
 
     // Form data for shipping/payment simulation
     const [formData, setFormData] = useState({
@@ -28,86 +28,41 @@ export default function CheckoutPage() {
     });
 
     useEffect(() => {
-        if (!user) {
+        if (!isAuthenticated) {
             router.push("/login");
-            return;
+        } else {
+            fetchCart();
         }
-        fetchCart();
-    }, [user, token, router]);
-
-    const fetchCart = async () => {
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/cart`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (data.items || data.CartItems) {
-                const items = data.items || data.CartItems;
-                setCartItems(items);
-                calculateTotal(items);
-            }
-        } catch (error) {
-            console.error("Error fetching cart:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const calculateTotal = (items: any[]) => {
-        const t = items.reduce((acc: number, item: any) => {
-            const price = parseFloat(item.Product?.price || 0);
-            return acc + (price * item.quantity);
-        }, 0);
-        setTotal(t);
-    };
+    }, [isAuthenticated, router, fetchCart]);
 
     const handlePayment = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/checkout`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(formData) // Send simulated shipping data
+            await checkout(formData);
+            Swal.fire({
+                title: '¡Compra Exitosa!',
+                text: 'Muchas gracias por tu compra. Recibirás un correo con los detalles.',
+                icon: 'success',
+                confirmButtonColor: '#ff3333',
+                confirmButtonText: 'Ver mis pedidos'
+            }).then(() => {
+                router.push('/orders'); // Or /shop
             });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                Swal.fire({
-                    title: '¡Compra Exitosa!',
-                    text: 'Muchas gracias por tu compra. Recibirás un correo con los detalles.',
-                    icon: 'success',
-                    confirmButtonColor: '#ff3333',
-                    confirmButtonText: 'Ver mis pedidos'
-                }).then(() => {
-                    router.push('/orders');
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.error || 'Hubo un problema con la compra'
-                });
-            }
-
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Error de conexión'
+                text: error.message || 'Error de conexión'
             });
         }
     };
 
-    if (loading) return <div className="container py-[8rem] text-center text-[2rem]">Cargando checkout...</div>;
+    if (loading && cartItems.length === 0) return <div className="container py-[8rem]"><Loader /></div>;
 
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !loading) {
         return (
             <div className="container py-[8rem] text-center">
-                <h2 className="text-[3rem] font-bold mb-4">Tu carrito está vacío</h2>
+                <h2 className="text-[3rem] font-bold mb-4">Tu carrito está vacío (Checkout)</h2>
                 <button onClick={() => router.push('/shop')} className="bg-primary text-white px-8 py-3 rounded-full text-[1.6rem] font-bold hover:bg-dark-bg transition-colors">Volver a la tienda</button>
             </div>
         )
@@ -136,13 +91,13 @@ export default function CheckoutPage() {
                                     <p className="text-[1.6rem] font-bold">{item.Product?.product_name}</p>
                                     <p className="text-[1.4rem] text-gray-500">Cant: {item.quantity}</p>
                                 </div>
-                                <p className="text-[1.6rem] font-bold">$ {(parseFloat(item.Product?.price) * item.quantity).toFixed(2)}</p>
+                                <p className="text-[1.6rem] font-bold">$ {(Number(item.Product?.price) * item.quantity).toFixed(2)}</p>
                             </div>
                         ))}
                     </div>
                     <div className="border-t pt-[2rem] flex justify-between items-center text-[2.4rem] font-bold">
                         <span>Total:</span>
-                        <span>$ {total.toFixed(2)}</span>
+                        <span>$ {subtotal.toFixed(2)}</span>
                     </div>
                 </div>
 
