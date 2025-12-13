@@ -70,14 +70,14 @@ export default async function Home() {
                             </Link>
                         </div>
                         <div className="order-1 min-[1000px]:order-2 flex justify-center">
-                            <Image src="/images/star-wars/baby-yoda-1.webp" alt="Baby Yoda" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
+                            <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1765590995/baby-yoda-1_jxe2yb.webp" alt="Baby Yoda" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
                         </div>
                     </article>
 
                     {/* Collection 2 */}
                     <article className="grid grid-cols-1 min-[1000px]:grid-cols-2 items-center gap-[2rem] mb-[4rem]">
                         <div className="flex justify-center order-1">
-                            <Image src="/images/pokemon/vulpix-1.webp" alt="Vulpix" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
+                            <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1765590981/vulpix-1_gnqotb.webp" alt="Vulpix" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
                         </div>
                         <div className="flex flex-col gap-[2.4rem] items-center min-[1000px]:items-start text-center min-[1000px]:text-left order-2">
                             <h3 className="font-raleway text-[2.4rem] text-dark font-light border-b-[3px] border-primary pb-[2rem] uppercase w-full max-w-[400px]">
@@ -106,7 +106,7 @@ export default async function Home() {
                             </Link>
                         </div>
                         <div className="order-1 min-[1000px]:order-2 flex justify-center">
-                            <Image src="/images/harry-potter/snape-patronus-1.webp" alt="Snape Patronus" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
+                            <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1765590945/snape-patronus-1_xqytax.webp" alt="Snape Patronus" width={400} height={400} className="w-full max-w-[300px] min-[1000px]:max-w-[400px] object-contain hover:scale-105 transition-transform" />
                         </div>
                     </article>
                 </section>

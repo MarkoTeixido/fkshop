@@ -17,6 +17,9 @@ const raleway = Raleway({
 export const metadata: Metadata = {
   title: "Funkoshop",
   description: "Tienda de Funkos",
+  icons: {
+    icon: "https://res.cloudinary.com/dp7jr9k94/image/upload/v1765666166/Captura_de_pantalla_2025-12-13_194856_sscdoi.png"
+  }
 };
 
 import { AuthProvider } from "@/context/AuthContext";
