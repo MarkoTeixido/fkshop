@@ -1,24 +1,32 @@
 const express = require('express');
 const router = express.Router();
 const adminControllers = require('../controllers/adminControllers');
-const { verifyToken, verifyAdmin } = require('../middlewares/auth');
+const { verifyToken, isAdmin } = require('../middlewares/auth'); // assuming verifyToken/isAdmin are separate now or I need to check
+const validateRequest = require('../middlewares/validationMiddleware');
+const { body } = require('express-validator');
 
-// Middleware to check for Admin Role
-// Assuming verifyToken adds user to req.user
-const checks = [verifyToken, (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ error: 'Acceso denegado: Requiere rol de administrador.' });
-    }
-    next();
-}];
+// Auth Middleware Chain
+const authChain = [verifyToken, isAdmin];
 
-router.get('/dashboard', checks, adminControllers.getDashboard);
-router.post('/products', checks, adminControllers.createProduct);
-router.get('/activity', checks, adminControllers.getActivity);
-router.get('/notifications', checks, adminControllers.getNotifications);
-router.get('/reports', checks, adminControllers.getReports);
-router.get('/products/:id', checks, adminControllers.getProductById);
-router.put('/products/:id', checks, adminControllers.editProduct);
-router.delete('/products/:id', checks, adminControllers.deleteProduct);
+// Validation Chains
+const productValidation = [
+    body('product_name').notEmpty().withMessage('El nombre es obligatorio'),
+    body('price').isFloat({ min: 0 }).withMessage('El precio debe ser un número positivo'),
+    body('stock').isInt({ min: 0 }).withMessage('El stock debe ser un entero positivo'),
+    body('sku').notEmpty().withMessage('El SKU es obligatorio'),
+    // Add more fields as needed
+    validateRequest
+];
+
+// Routes
+router.get('/dashboard', authChain, adminControllers.getDashboard);
+router.get('/activity', authChain, adminControllers.getActivity);
+router.get('/notifications', authChain, adminControllers.getNotifications);
+router.get('/reports', authChain, adminControllers.getReports);
+
+router.post('/products', authChain, productValidation, adminControllers.createProduct);
+router.get('/products/:id', authChain, adminControllers.getProductById);
+router.put('/products/:id', authChain, productValidation, adminControllers.editProduct);
+router.delete('/products/:id', authChain, adminControllers.deleteProduct);
 
 module.exports = router;

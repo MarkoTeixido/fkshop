@@ -1,23 +1,16 @@
-const SalesByProduct = require('../models/model_view_sales');
-const OrderSummary = require('../models/model_view_orders');
+const reportService = require('../services/service_report');
+const asyncHandler = require('../utils/asyncHandler');
 
 const reportControllers = {
-    getSalesReport: async (req, res) => {
-        try {
-            const data = await SalesByProduct.findAll();
-            res.json(data);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    },
-    getOrderReport: async (req, res) => {
-        try {
-            const data = await OrderSummary.findAll();
-            res.json(data);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+    getSalesReport: asyncHandler(async (req, res) => {
+        const data = await reportService.getSalesByProduct();
+        res.json(data);
+    }),
+
+    getOrderReport: asyncHandler(async (req, res) => {
+        const data = await reportService.getOrderSummary();
+        res.json(data);
+    })
 };
 
 module.exports = reportControllers;

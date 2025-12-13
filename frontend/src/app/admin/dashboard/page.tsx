@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import Image from 'next/image';
 import { FaMagnifyingGlass, FaPlus } from "react-icons/fa6";
+import { PiPencilSimpleLineDuotone, PiTrashSimpleDuotone } from "react-icons/pi";
 import Swal from 'sweetalert2';
 
 export default function AdminDashboard() {
@@ -118,11 +118,11 @@ export default function AdminDashboard() {
                                 <td className="py-4">{p.Category?.category_name || 'N/A'}</td>
                                 <td className="py-4">{p.stock}</td>
                                 <td className="py-4 flex gap-4">
-                                    <Link href={`/admin/products/${p.product_id}/edit`} className="hover:opacity-80">
-                                        <Image src="/images/icons/edit_pencil.svg" alt="Edit" width={24} height={24} />
+                                    <Link href={`/admin/products/${p.product_id}/edit`} className="hover:scale-110 transition-transform p-2 rounded-full hover:bg-blue-50">
+                                        <PiPencilSimpleLineDuotone size={26} className="text-[#4F46E5]" />
                                     </Link>
-                                    <button onClick={() => handleDelete(p.product_id)} className="hover:opacity-80">
-                                        <Image src="/images/icons/delete_trash.svg" alt="Delete" width={24} height={24} />
+                                    <button onClick={() => handleDelete(p.product_id)} className="hover:scale-110 transition-transform p-2 rounded-full hover:bg-red-50">
+                                        <PiTrashSimpleDuotone size={26} className="text-[#E11D48]" />
                                     </button>
                                 </td>
                             </tr>

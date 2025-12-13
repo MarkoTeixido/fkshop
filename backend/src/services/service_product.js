@@ -1,103 +1,44 @@
-const { product } = require('../models/model_product');
-const { licence } = require('../models/model_licence');
-const { category } = require('../models/model_category');
+const productRepository = require('../repositories/productRepository');
 
-const getAllProducts = async () => {
-  try {
-    const rows = await product.findAll({
-      include: [
-        { model: category, attributes: ['category_name'] },
-        { model: licence, attributes: ['licence_name'] },
-      ],
+class ProductService {
+  async getAllProducts() {
+    const products = await productRepository.findAll();
+    // Transform data if necessary to match frontend expectations (flattening objects)
+    return products.map(p => {
+      const plain = p.get({ plain: true });
+      return {
+        ...plain,
+        licence: plain.licence ? plain.licence.licence_name : null, // Flattening
+        category: plain.category ? plain.category.category_name : null
+      };
     });
-
-    const formattedRows = rows.map(row => {
-      const rowData = row.get({ plain: true });
-      if (row.licence) rowData.licence = row.licence.get({ plain: true });
-      if (row.category) rowData.category = row.category.get({ plain: true });
-      return rowData;
-    });
-
-    return formattedRows;
-  } catch (e) {
-    throw new Error(`Error al recuperar productos: ${e.message}`);
   }
-};
 
-const getProductById = async (productId) => {
-  try {
-    const row = await product.findByPk(productId, {
-      include: [
-        { model: category, attributes: ['category_name'] },
-        { model: licence, attributes: ['licence_name'] },
-      ],
-    });
+  async getProductById(id) {
+    const product = await productRepository.findById(id);
+    if (!product) return null;
 
-    if (!row) return null;
-
-    const rowData = row.get({ plain: true });
-    if (row.licence) rowData.licence = row.licence.get({ plain: true });
-    if (row.category) rowData.category = row.category.get({ plain: true });
-
-    return rowData;
-  } catch (e) {
-    throw new Error(`Error al recuperar el producto con ID ${productId}: ${e.message}`);
+    const plain = product.get({ plain: true });
+    return {
+      ...plain,
+      licence: plain.licence ? plain.licence.licence_name : null,
+      category: plain.category ? plain.category.category_name : null
+    };
   }
-};
 
-const createProduct = async (dataProduct) => {
-  try {
-    const createdProduct = await product.create({
-      product_name: dataProduct.product_name,
-      product_description: dataProduct.product_description,
-      price: dataProduct.price,
-      stock: dataProduct.stock,
-      discount: dataProduct.discount,
-      discount_end_date: dataProduct.discount_end_date,
-      is_featured: dataProduct.is_featured,
-      is_active: dataProduct.is_active,
-      sku: dataProduct.sku,
-      dues: dataProduct.dues,
-      image_front: dataProduct.image_front,
-      image_back: dataProduct.image_back,
-      licence_id: dataProduct.licence_id,
-      category_id: dataProduct.category_id,
-    });
+  async createProduct(data) {
+    // Business Logic: Check if SKU exists? (Repository might throw unique constraint error)
+    // For now, simple pass-through
+    return await productRepository.create(data);
+  }
 
-    return createdProduct;
-  } catch (error) {
-    throw new Error(`Error al crear el producto: ${error.message}`);
+  async updateProduct(id, data) {
+    return await productRepository.update(id, data);
+  }
+
+  async deleteProduct(id) {
+    return await productRepository.delete(id);
   }
 }
 
-const updateProductById = async (productId, updatedDataProduct) => {
-  try {
-    const existingProduct = await product.findByPk(productId);
-    if (!existingProduct) return null;
-
-    const updateProduct = await existingProduct.update(updatedDataProduct);
-    return updateProduct;
-  } catch (e) {
-    throw new Error(`Error al actualizar el producto con ID ${productId}: ${e.message}`);
-  }
-};
-
-const deleteProductById = async (productId) => {
-  try {
-    const existingProduct = await product.findByPk(productId);
-    if (!existingProduct) return null;
-
-    await existingProduct.destroy();
-    return true;
-  } catch (e) {
-    throw new Error(`Error al eliminar el producto con ID ${productId}: ${e.message}`);
-  }
-};
-
-module.exports = {
-  getAllProducts,
-  getProductById,
-  createProduct,
-  updateProductById,
-  deleteProductById
-}
+module.exports = new ProductService();

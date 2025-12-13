@@ -41,9 +41,7 @@ app.use((req, res, next) => {
 });
 
 // Error Handler
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Internal Server Error', message: 'Algo salió mal!' });
-});
+const errorHandler = require('./middlewares/errorHandler');
+app.use(errorHandler);
 
 module.exports = app;
