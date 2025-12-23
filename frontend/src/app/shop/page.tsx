@@ -57,9 +57,9 @@ export default function Shop() {
                 <div className="flex-1">
                     {/* Header for Shop Grid */}
                     <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-6">
-                        <h2 className="text-3xl font-black text-white italic uppercase">All Products <span className="text-primary text-xl ml-1">({products.length})</span></h2>
+                        <h2 className="text-3xl font-black text-white italic uppercase">Todos los Productos <span className="text-primary text-xl ml-1">({products.length})</span></h2>
                         <div className="hidden md:flex items-center gap-2 text-gray-400 text-sm">
-                            Showing <span className="text-white font-bold">{products.length}</span> results
+                            Mostrando <span className="text-white font-bold">{products.length}</span> resultados
                         </div>
                     </div>
 
@@ -69,8 +69,8 @@ export default function Shop() {
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-white/10 rounded-2xl bg-white/5 p-12">
-                            <p className="text-2xl font-bold text-white mb-2">No products found</p>
-                            <p className="text-gray-400">Try adjusting your filters</p>
+                            <p className="text-2xl font-bold text-white mb-2">No se encontraron productos</p>
+                            <p className="text-gray-400">Intenta ajustar tus filtros</p>
                         </div>
                     ) : (
                         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-12">

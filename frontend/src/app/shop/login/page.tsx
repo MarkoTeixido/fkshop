@@ -61,8 +61,8 @@ export default function LoginPage() {
 
                 <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl relative z-10">
                     <div className="text-center mb-10">
-                        <h1 className="text-4xl font-black italic uppercase text-white mb-2">Welcome Back</h1>
-                        <p className="text-gray-400">Enter your credentials to access your account.</p>
+                        <h1 className="text-4xl font-black italic uppercase text-white mb-2">Bienvenido de Nuevo</h1>
+                        <p className="text-gray-400">Ingresa tus credenciales para acceder a tu cuenta.</p>
                     </div>
 
                     {error && (
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
                     <form onSubmit={(e) => performLogin(e)} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Email</label>
+                            <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Correo Electrónico</label>
                             <div className="relative group">
                                 <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-white transition-colors" />
                                 <input
@@ -81,14 +81,14 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-black/20 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-                                    placeholder="name@example.com"
+                                    placeholder="nombre@ejemplo.com"
                                     required
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Password</label>
+                            <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Contraseña</label>
                             <div className="relative group">
                                 <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-white transition-colors" />
                                 <input
@@ -104,7 +104,7 @@ export default function LoginPage() {
 
                         <div className="flex justify-end">
                             <Link href="/shop/forgot-password" className="text-xs text-gray-400 hover:text-white transition-colors">
-                                Forgot Password?
+                                ¿Olvidaste tu Contraseña?
                             </Link>
                         </div>
 
@@ -113,14 +113,14 @@ export default function LoginPage() {
                             disabled={loading}
                             className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed group"
                         >
-                            {loading ? 'Logging in...' : 'Sign In'}
+                            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                             {!loading && <FaArrowRight className="group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
 
                     {/* Test Accounts */}
                     <div className="mt-8 pt-8 border-t border-white/10">
-                        <p className="text-center text-xs text-gray-500 uppercase tracking-widest mb-4">Quick Login (Test Mode)</p>
+                        <p className="text-center text-xs text-gray-500 uppercase tracking-widest mb-4">Inicio Rápido (Modo Prueba)</p>
                         <div className="grid grid-cols-2 gap-4">
                             <button
                                 type="button"
@@ -128,7 +128,7 @@ export default function LoginPage() {
                                 className="flex flex-col items-center justify-center gap-2 p-3 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-xl transition-all group"
                             >
                                 <FaUserShield className="text-primary group-hover:scale-110 transition-transform" size={20} />
-                                <span className="text-xs font-bold text-gray-300">Admin</span>
+                                <span className="text-xs font-bold text-gray-300">Administrador</span>
                             </button>
                             <button
                                 type="button"
@@ -136,13 +136,13 @@ export default function LoginPage() {
                                 className="flex flex-col items-center justify-center gap-2 p-3 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-xl transition-all group"
                             >
                                 <FaUser className="text-blue-500 group-hover:scale-110 transition-transform" size={20} />
-                                <span className="text-xs font-bold text-gray-300">User</span>
+                                <span className="text-xs font-bold text-gray-300">Usuario</span>
                             </button>
                         </div>
                     </div>
 
                     <p className="text-center text-gray-400 mt-8 text-sm">
-                        Don't have an account? <Link href="/shop/register" className="text-white font-bold hover:underline decoration-primary underline-offset-4">Sign Up</Link>
+                        ¿No tienes una cuenta? <Link href="/shop/register" className="text-white font-bold hover:underline decoration-primary underline-offset-4">Registrarse</Link>
                     </p>
                 </div>
             </main>

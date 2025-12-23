@@ -56,7 +56,7 @@ export default function ProductDetailPage() {
 
     if (!product) return (
         <div className="bg-dark-bg min-h-screen flex items-center justify-center text-white">
-            Product not found
+            Producto no encontrado
         </div>
     );
 
@@ -66,7 +66,7 @@ export default function ProductDetailPage() {
                 <div className="container-custom">
                     {/* Breadcrumbs (Simple) */}
                     <div className="flex items-center gap-2 text-sm text-gray-500 mb-8 uppercase tracking-wider font-bold">
-                        <span>Home</span> / <span>Shop</span> / <span className="text-primary">{product.licence_name}</span>
+                        <span>Inicio</span> / <span>Tienda</span> / <span className="text-primary">{product.licence_name}</span>
                     </div>
 
                     {/* Product Grid */}
@@ -95,8 +95,8 @@ export default function ProductDetailPage() {
                     <div className="border-t border-white/10 pt-20">
                         <div className="flex justify-between items-end mb-12">
                             <div>
-                                <h3 className="text-primary font-bold tracking-widest uppercase mb-2">Complete the Set</h3>
-                                <h2 className="text-4xl font-black text-white uppercase italic">You Might Also Like</h2>
+                                <h3 className="text-primary font-bold tracking-widest uppercase mb-2">Completa el Set</h3>
+                                <h2 className="text-4xl font-black text-white uppercase italic">También te Puede Gustar</h2>
                             </div>
                         </div>
                         <ProductSlider products={relatedProducts} />
@@ -105,19 +105,19 @@ export default function ProductDetailPage() {
                     {/* Reviews Section Mockup */}
                     <div className="mt-32 border-t border-white/10 pt-20 grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div className="col-span-1">
-                            <h2 className="text-3xl font-black text-white uppercase italic mb-8">Customer Reviews</h2>
+                            <h2 className="text-3xl font-black text-white uppercase italic mb-8">Reseñas de Clientes</h2>
                             <div className="flex items-baseline gap-4 mb-4">
                                 <span className="text-6xl font-black text-white">4.8</span>
                                 <div className="flex text-primary text-xl">{'★'.repeat(5)}</div>
                             </div>
-                            <p className="text-gray-400 mb-8">Based on 124 reviews</p>
+                            <p className="text-gray-400 mb-8">Basado en 124 reseñas</p>
                             {/* <button className="w-full border border-white/20 text-white font-bold py-4 rounded-xl hover:bg-white hover:text-black transition-colors">
                                 Write a Review
                              </button> */}
                         </div>
                         <div className="col-span-2 space-y-8">
                             {/* Reviews will be mapped here when API is ready */}
-                            <p className="text-gray-500">No reviews yet.</p>
+                            <p className="text-gray-500">Aún no hay reseñas.</p>
                         </div>
                     </div>
                 </div>

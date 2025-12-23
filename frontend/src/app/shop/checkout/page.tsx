@@ -40,10 +40,10 @@ export default function CheckoutPage() {
     if (cartItems.length === 0) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-4">
-                <h1 className="text-3xl font-black italic uppercase text-white mb-4">Your Cart is Empty</h1>
-                <p className="text-gray-400 mb-8">Add some Funkos to your cart before checking out.</p>
+                <h1 className="text-3xl font-black italic uppercase text-white mb-4">Tu Carrito está Vacío</h1>
+                <p className="text-gray-400 mb-8">Agrega algunos Funkos a tu carrito antes de finalizar la compra.</p>
                 <Link href="/shop" className="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-xl transition-all uppercase tracking-wider">
-                    Back to Shop
+                    Volver a la Tienda
                 </Link>
             </div>
         );
@@ -51,7 +51,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="container-custom py-20 md:py-32 max-w-6xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-black italic uppercase text-white mb-12 text-center md:text-left">Checkout</h1>
+            <h1 className="text-4xl md:text-5xl font-black italic uppercase text-white mb-12 text-center md:text-left">Finalizar Compra</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
@@ -62,12 +62,12 @@ export default function CheckoutPage() {
                     <div className="flex items-center gap-4 mb-8">
                         <div className={`flex items-center gap-2 ${step === 'shipping' ? 'text-primary' : 'text-green-500'}`}>
                             <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border-2 ${step === 'shipping' ? 'border-primary bg-primary/20' : 'border-green-500 bg-green-500/20'}`}>1</span>
-                            <span className="font-bold uppercase text-sm">Shipping</span>
+                            <span className="font-bold uppercase text-sm">Envío</span>
                         </div>
                         <div className="w-12 h-[2px] bg-white/10" />
                         <div className={`flex items-center gap-2 ${step === 'payment' ? 'text-primary' : 'text-gray-500'}`}>
                             <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border-2 ${step === 'payment' ? 'border-primary bg-primary/20' : 'border-gray-500 bg-transparent'}`}>2</span>
-                            <span className="font-bold uppercase text-sm">Payment</span>
+                            <span className="font-bold uppercase text-sm">Pago</span>
                         </div>
                     </div>
 
@@ -75,23 +75,23 @@ export default function CheckoutPage() {
                     {step === 'shipping' && (
                         <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-3xl animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <h2 className="text-xl font-bold text-white uppercase mb-6 flex items-center gap-3">
-                                <FaTruck className="text-primary" /> Shipping Details
+                                <FaTruck className="text-primary" /> Detalles de Envío
                             </h2>
                             <form onSubmit={handleShippingSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Full Address</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Dirección Completa</label>
                                         <input
                                             required
                                             value={shippingData.address}
                                             onChange={(e) => setShippingData({ ...shippingData, address: e.target.value })}
                                             type="text"
-                                            placeholder="123 Funko St"
+                                            placeholder="Calle Funko 123"
                                             className="w-full bg-black/20 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">City</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Ciudad</label>
                                         <input
                                             required
                                             value={shippingData.city}
@@ -104,7 +104,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Zip Code</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Código Postal</label>
                                         <input
                                             required
                                             value={shippingData.zip}
@@ -115,7 +115,7 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Country</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">País</label>
                                         <input
                                             disabled
                                             value={shippingData.country}
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
                                         type="submit"
                                         className="bg-primary hover:bg-primary-hover text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] uppercase tracking-wider shadow-lg shadow-primary/20"
                                     >
-                                        Continue to Payment
+                                        Continuar al Pago
                                     </button>
                                 </div>
                             </form>
@@ -141,28 +141,28 @@ export default function CheckoutPage() {
                     {step === 'payment' && (
                         <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 md:p-8 rounded-3xl animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <h2 className="text-xl font-bold text-white uppercase mb-6 flex items-center gap-3">
-                                <FaCreditCard className="text-primary" /> Payment
+                                <FaCreditCard className="text-primary" /> Pago
                             </h2>
                             <div className="mb-6 bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl flex items-start gap-4">
                                 <FaLock className="text-blue-400 mt-1" />
                                 <div>
-                                    <h4 className="font-bold text-blue-400 text-sm uppercase mb-1">Encrypted Transaction</h4>
-                                    <p className="text-xs text-blue-300/80">Your payment information is handled securely. This is a mock checkout.</p>
+                                    <h4 className="font-bold text-blue-400 text-sm uppercase mb-1">Transacción Encriptada</h4>
+                                    <p className="text-xs text-blue-300/80">Tu información de pago se maneja de forma segura. Este es un checkout de prueba.</p>
                                 </div>
                             </div>
 
                             <form onSubmit={handlePaymentSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Cardholder Name</label>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Nombre del Titular</label>
                                     <input
                                         required
                                         type="text"
-                                        placeholder="John Doe"
+                                        placeholder="Juan Pérez"
                                         className="w-full bg-black/20 border border-white/10 rounded-xl py-4 px-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Card Number</label>
+                                    <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Número de Tarjeta</label>
                                     <input
                                         required
                                         type="text"
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Expiry</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Vencimiento</label>
                                         <input
                                             required
                                             type="text"
@@ -200,14 +200,14 @@ export default function CheckoutPage() {
                                         onClick={() => setStep('shipping')}
                                         className="text-gray-400 hover:text-white font-bold text-sm uppercase transition-colors"
                                     >
-                                        Back to Shipping
+                                        Volver a Envío
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={loading}
                                         className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] uppercase tracking-wider shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
-                                        {loading ? 'Processing...' : 'Pay Now'}
+                                        {loading ? 'Procesando...' : 'Pagar Ahora'}
                                         {!loading && <FaCheckCircle />}
                                     </button>
                                 </div>
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                 {/* Summary Column */}
                 <div className="lg:col-span-1">
                     <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-3xl sticky top-32">
-                        <h3 className="text-xl font-bold text-white uppercase mb-6">Order Summary</h3>
+                        <h3 className="text-xl font-bold text-white uppercase mb-6">Resumen del Pedido</h3>
 
                         <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                             {cartItems.map((item) => (
@@ -252,8 +252,8 @@ export default function CheckoutPage() {
                                 <span>${subtotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-gray-400 text-sm">
-                                <span>Shipping</span>
-                                <span>Free</span>
+                                <span>Envío</span>
+                                <span>Gratis</span>
                             </div>
                             <div className="flex justify-between text-white font-black text-xl border-t border-white/10 pt-4">
                                 <span>Total</span>

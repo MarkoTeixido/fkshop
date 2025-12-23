@@ -30,25 +30,25 @@ export default function CartPage() {
 
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
                         <div>
-                            <h1 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-2">Your Cart</h1>
+                            <h1 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-2">Tu Carrito</h1>
                             <p className="text-gray-400">
                                 {subtotal > 50
-                                    ? <span className="text-green-500 font-bold">You've qualified for Free Shipping!</span>
-                                    : `Add $${(50 - subtotal).toFixed(2)} more for Free Shipping.`
+                                    ? <span className="text-green-500 font-bold">¡Has calificado para Envío Gratis!</span>
+                                    : `Agrega $${(50 - subtotal).toFixed(2)} más para Envío Gratis.`
                                 }
                             </p>
                         </div>
                         <Link href="/shop" className="text-white hover:text-primary font-bold flex items-center gap-2 transition-colors">
-                            <FaArrowLeft /> Continue Shopping
+                            <FaArrowLeft /> Continuar Comprando
                         </Link>
                     </div>
 
                     {cartItems.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 border border-dashed border-white/10 rounded-2xl bg-white/5">
-                            <h2 className="text-2xl font-bold text-white mb-4">Your cart is empty</h2>
-                            <p className="text-gray-400 mb-8">Looks like you haven't added any Funkos yet.</p>
+                            <h2 className="text-2xl font-bold text-white mb-4">Tu carrito está vacío</h2>
+                            <p className="text-gray-400 mb-8">Parece que aún no has agregado ningún Funko.</p>
                             <Link href="/shop" className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-3 rounded-full transition-colors">
-                                Start Shopping
+                                Comenzar a Comprar
                             </Link>
                         </div>
                     ) : (
@@ -56,10 +56,10 @@ export default function CartPage() {
                             {/* Cart List */}
                             <div className="lg:col-span-2 space-y-4">
                                 <div className="hidden md:flex justify-between text-xs font-bold text-gray-500 uppercase tracking-widest px-6 mb-2">
-                                    <span>Product</span>
+                                    <span>Producto</span>
                                     <div className="flex gap-20 pr-12">
-                                        <span>Quantity</span>
-                                        <span>Price</span>
+                                        <span>Cantidad</span>
+                                        <span>Precio</span>
                                     </div>
                                 </div>
 

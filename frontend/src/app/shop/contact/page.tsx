@@ -14,9 +14,9 @@ export default function Contact() {
 
                 <div className="container-custom relative z-10 max-w-5xl mx-auto">
                     <div className="text-center mb-10">
-                        <h1 className="text-4xl md:text-5xl font-black italic uppercase text-white mb-2">Get In Touch</h1>
+                        <h1 className="text-4xl md:text-5xl font-black italic uppercase text-white mb-2">Ponte en Contacto</h1>
                         <p className="text-gray-400 max-w-xl mx-auto text-sm">
-                            Have a question, suggestion, or just want to talk about Funkos? We'd love to hear from you.
+                            ¿Tienes una pregunta, sugerencia o simplemente quieres hablar sobre Funkos? Nos encantaría saber de ti.
                         </p>
                     </div>
 
@@ -31,7 +31,7 @@ export default function Contact() {
                                             <FaPhone size={18} />
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Phone</h3>
+                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Teléfono</h3>
                                             <p className="text-gray-400 font-light text-sm">+54 011 4736-6830</p>
                                         </div>
                                     </div>
@@ -43,7 +43,7 @@ export default function Contact() {
                                             <FaEnvelope size={18} />
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Email</h3>
+                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Correo Electrónico</h3>
                                             <p className="text-gray-400 font-light text-sm">contact@funkoshop.com</p>
                                         </div>
                                     </div>
@@ -55,7 +55,7 @@ export default function Contact() {
                                             <FaLocationDot size={18} />
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Location</h3>
+                                            <h3 className="text-sm font-bold text-white uppercase mb-1">Ubicación</h3>
                                             <p className="text-gray-400 font-light text-sm">Buenos Aires, Argentina</p>
                                         </div>
                                     </div>
@@ -66,51 +66,51 @@ export default function Contact() {
                         {/* Form Section */}
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl">
                             <h2 className="text-xl font-bold text-white uppercase mb-6 flex items-center gap-3">
-                                Send Message <span className="w-8 h-[1px] bg-primary block" />
+                                Enviar Mensaje <span className="w-8 h-[1px] bg-primary block" />
                             </h2>
 
                             <form className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Name</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Nombre</label>
                                         <input
                                             type="text"
                                             className="w-full bg-black/20 border border-white/10 rounded-lg py-3 px-3 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-                                            placeholder="John Doe"
+                                            placeholder="Juan Pérez"
                                         />
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Email</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Correo Electrónico</label>
                                         <input
                                             type="email"
                                             className="w-full bg-black/20 border border-white/10 rounded-lg py-3 px-3 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-                                            placeholder="john@example.com"
+                                            placeholder="juan@ejemplo.com"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Subject</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Asunto</label>
                                     <input
                                         type="text"
                                         className="w-full bg-black/20 border border-white/10 rounded-lg py-3 px-3 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
-                                        placeholder="Order Inquiry"
+                                        placeholder="Consulta sobre pedido"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Message</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">Mensaje</label>
                                     <textarea
                                         rows={4}
                                         className="w-full bg-black/20 border border-white/10 rounded-lg py-3 px-3 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all resize-none"
-                                        placeholder="How can we help you?"
+                                        placeholder="¿Cómo podemos ayudarte?"
                                     />
                                 </div>
 
                                 <button
                                     className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all transform hover:scale-[1.02] group uppercase tracking-wider text-sm mt-2"
                                 >
-                                    Send <FaPaperPlane className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                    Enviar <FaPaperPlane className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                 </button>
                             </form>
                         </div>
