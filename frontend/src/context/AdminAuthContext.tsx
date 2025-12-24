@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { User } from "@/types/auth.types";
 import { authUtils } from "@/utils/auth.utils";
 
-interface ShopAuthContextType {
+interface AdminAuthContextType {
     user: User | null;
     token: string | null;
     isAuthenticated: boolean;
@@ -14,9 +14,9 @@ interface ShopAuthContextType {
     isLoading: boolean;
 }
 
-const ShopAuthContext = createContext<ShopAuthContextType | undefined>(undefined);
+const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-export function ShopAuthProvider({ children }: { children: ReactNode }) {
+export function AdminAuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,8 +24,8 @@ export function ShopAuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const initAuth = () => {
-            const storedToken = authUtils.getShopToken();
-            const storedUser = authUtils.getShopUser();
+            const storedToken = authUtils.getAdminToken();
+            const storedUser = authUtils.getAdminUser();
 
             if (storedToken && storedUser) {
                 setToken(storedToken);
@@ -36,12 +36,12 @@ export function ShopAuthProvider({ children }: { children: ReactNode }) {
         initAuth();
     }, []);
 
-    const login = (newToken: string, newUser: User, redirectPath: string = "/") => {
+    const login = (newToken: string, newUser: User, redirectPath: string = "/admin/dashboard") => {
         // Enforce Mutual Exclusion
-        authUtils.removeAdminToken();
+        authUtils.removeShopToken();
 
-        authUtils.setShopToken(newToken);
-        authUtils.setShopUser(newUser);
+        authUtils.setAdminToken(newToken);
+        authUtils.setAdminUser(newUser);
 
         setToken(newToken);
         setUser(newUser);
@@ -49,30 +49,25 @@ export function ShopAuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = () => {
-        authUtils.removeShopToken();
+        authUtils.removeAdminToken();
         setToken(null);
         setUser(null);
-        router.push("/shop/login");
+        router.push("/admin/login");
     };
 
     const isAuthenticated = !!token;
 
     return (
-        <ShopAuthContext.Provider value={{ user, token, isAuthenticated, login, logout, isLoading }}>
+        <AdminAuthContext.Provider value={{ user, token, isAuthenticated, login, logout, isLoading }}>
             {children}
-        </ShopAuthContext.Provider>
+        </AdminAuthContext.Provider>
     );
 }
 
-export function useShopAuth() {
-    const context = useContext(ShopAuthContext);
+export function useAdminAuth() {
+    const context = useContext(AdminAuthContext);
     if (context === undefined) {
-        throw new Error("useShopAuth must be used within a ShopAuthProvider");
+        throw new Error("useAdminAuth must be used within an AdminAuthProvider");
     }
     return context;
 }
-
-// Re-export as useAuth for backward compatibility during refactor, but it is effectively ShopAuth now.
-// Ideally usage should be migrated to useShopAuth.
-export const useAuth = useShopAuth;
-export const AuthProvider = ShopAuthProvider;

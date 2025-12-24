@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext'; // Creating this file first if not exists, but likely exists based on previous logs
+import { useShopAuth } from '@/context/AuthContext'; // Creating this file first if not exists, but likely exists based on previous logs
 import { FaEnvelope, FaLock, FaArrowRight, FaUserShield, FaUser } from "react-icons/fa6";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -12,7 +12,7 @@ import { authService } from '@/services/auth.service';
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useAuth();
+    const { login } = useShopAuth();
     const router = useRouter();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);

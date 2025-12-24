@@ -15,8 +15,19 @@ export const api = axios.create({
 // Request Interceptor: Attach Token
 api.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = authUtils.getToken();
-        console.log('🔑 [API Request]', config.url, 'Token:', token ? '✅ Present' : '❌ Missing');
+        const url = config.url || '';
+        let token: string | null = null;
+
+        // Select token based on Endpoint
+        // Backend routes: /admin/* -> Admin Token, /shop/* -> Shop Token
+        if (url.startsWith('/admin') || url.includes('/auth/login/admin')) {
+            token = authUtils.getAdminToken();
+            console.log('🛡️ [API Request] Admin Context:', url);
+        } else {
+            token = authUtils.getShopToken();
+            console.log('🛍️ [API Request] Shop Context:', url);
+        }
+
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }

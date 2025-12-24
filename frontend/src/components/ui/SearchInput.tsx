@@ -19,10 +19,10 @@ export default function SearchInput({ onSearch, placeholder = "Buscar...", class
     }, [searchTerm, onSearch]);
 
     return (
-        <div className={`flex items-center gap-4 ${className}`}>
-            <FaMagnifyingGlass size={24} />
+        <div className={`flex items-center gap-3 ${className}`}>
+            <FaMagnifyingGlass size={16} className="text-gray-400" />
             <input
-                className="w-full border-2 border-primary rounded-[50px] px-[1.6rem] py-[0.8rem] text-[1.6rem] placeholder:text-gray-400 focus:outline-none"
+                className="w-full border border-gray-200 rounded-full px-4 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                 type="text"
                 placeholder={placeholder}
                 value={searchTerm}

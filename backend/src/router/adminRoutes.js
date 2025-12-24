@@ -23,6 +23,7 @@ router.get('/dashboard', authChain, adminControllers.getDashboard);
 router.get('/activity', authChain, adminControllers.getActivity);
 router.get('/notifications', authChain, adminControllers.getNotifications);
 router.get('/reports', authChain, adminControllers.getReports);
+router.get('/orders', authChain, adminControllers.getOrders);
 
 router.post('/products', authChain, productValidation, adminControllers.createProduct);
 router.get('/products/:id', authChain, adminControllers.getProductById);

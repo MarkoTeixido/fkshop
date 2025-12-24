@@ -22,6 +22,11 @@ class OrderService {
         }
 
         return await orderRepository.findAllByDate(dateFilter);
+        return await orderRepository.findAllByDate(dateFilter);
+    }
+
+    async getAllOrders() {
+        return await orderRepository.findAll();
     }
 
     async getUserOrders(userId) {

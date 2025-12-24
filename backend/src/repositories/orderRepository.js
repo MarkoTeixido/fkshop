@@ -26,6 +26,15 @@ class OrderRepository {
         });
     }
 
+    async findAll() {
+        return await Order.findAll({
+            order: [['created_at', 'DESC']],
+            include: [
+                { model: User, attributes: ['name', 'email', 'lastname'] }
+            ]
+        });
+    }
+
     async create(orderData, transaction) {
         return await Order.create(orderData, { transaction });
     }

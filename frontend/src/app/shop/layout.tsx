@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ShopAuthProvider } from "@/context/AuthContext"; // Renamed inside file but exported as AuthProvider/ShopAuthProvider
 
 export default function ShopLayout({
     children,

@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAdminAuth } from '@/context/AdminAuthContext';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 import { FaArrowLeft } from "react-icons/fa6";
 
 export default function CreateProduct() {
     const router = useRouter();
-    const { token } = useAuth();
+    const { token } = useAdminAuth();
     const [formData, setFormData] = useState({
         category: '',
         licence: '',
@@ -54,103 +54,224 @@ export default function CreateProduct() {
     };
 
     return (
-        <div className="container py-[4rem] text-dark px-[2.4rem] min-[1000px]:px-[12rem]">
-            {/* Header/Back */}
-            <div className="flex items-center gap-4 mb-[4rem]">
-                <Link href="/admin/dashboard" className="text-gray-500 hover:text-dark-bg">
-                    <FaArrowLeft size={24} />
+        <div className="animate-fade-in-up max-w-[1200px] mx-auto pb-12">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <div className="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
+                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+                        <span>/</span>
+                        <span>Products</span>
+                        <span>/</span>
+                        <span className="text-gray-900">Create</span>
+                    </div>
+                    <h1 className="text-2xl font-black text-dark-bg tracking-tight">New Product</h1>
+                    <p className="text-gray-500 text-sm mt-1">Add a new item to your catalog.</p>
+                </div>
+                <Link
+                    href="/admin/dashboard"
+                    className="flex items-center gap-2 text-gray-500 hover:text-dark-bg transition-colors font-medium text-sm"
+                >
+                    <FaArrowLeft />
+                    <span>Back to Dashboard</span>
                 </Link>
-                <h1 className="text-[3.2rem] font-bold uppercase">CREAR NUEVO ITEM</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="max-w-[1000px] flex flex-col gap-[4rem]">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-[4rem]">
-                    {/* Category */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="category">Categoria:</label>
-                        <select id="category" name="category" onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="1">Figuras</option>
-                            <option value="2">Remeras</option>
-                        </select>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Info Column */}
+                <div className="lg:col-span-2 flex flex-col gap-6">
+                    {/* Basic Details Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                        <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-primary rounded-full"></span>
+                            Basic Information
+                        </h2>
+
+                        <div className="flex flex-col gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_name">Product Name</label>
+                                    <input
+                                        type="text"
+                                        name="product_name"
+                                        id="product_name"
+                                        onChange={handleChange}
+                                        placeholder="e.g. Kakashi Hatake Figure"
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="sku">SKU Code</label>
+                                    <input
+                                        id="sku"
+                                        name="sku"
+                                        type="text"
+                                        onChange={handleChange}
+                                        placeholder="e.g. SSK111AB001"
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300 font-mono"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_description">Description</label>
+                                <textarea
+                                    name="product_description"
+                                    id="product_description"
+                                    onChange={handleChange}
+                                    placeholder="Detailed description of the product..."
+                                    rows={6}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300 resize-none"
+                                ></textarea>
+                            </div>
+                        </div>
                     </div>
-                    {/* License */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="licence">Licencia:</label>
-                        <select id="licence" name="licence" onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="1">Star Wars</option>
-                            <option value="2">Pokemon</option>
-                            <option value="3">Harry Potter</option>
-                        </select>
+
+                    {/* Media Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                        <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-primary rounded-full"></span>
+                            Product Images
+                        </h2>
+                        <div className="space-y-6">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_front">Front Image URL</label>
+                                <input
+                                    type="text"
+                                    name="image_front"
+                                    id="image_front"
+                                    onChange={handleChange}
+                                    placeholder="https://..."
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_back">Back Image URL</label>
+                                <input
+                                    type="text"
+                                    name="image_back"
+                                    id="image_back"
+                                    onChange={handleChange}
+                                    placeholder="https://..."
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Name */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="product_name">Nombre del producto:</label>
-                    <input type="text" name="product_name" id="product_name" onChange={handleChange} placeholder="Kakashi Hatake Shippuden Saga" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-
-                {/* Description */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="product_description">Descripción:</label>
-                    <textarea name="product_description" id="product_description" onChange={handleChange} placeholder="Descripcion del producto" rows={10} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400 resize-none"></textarea>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-[4rem]">
-                    {/* SKU */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="sku">SKU:</label>
-                        <input id="sku" name="sku" type="text" onChange={handleChange} placeholder="SSK111AB001" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
+                {/* Sidebar Column */}
+                <div className="flex flex-col gap-6">
+                    {/* Organization Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Organization</h2>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="category">Category</label>
+                                <select
+                                    id="category"
+                                    name="category"
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="1">Figuras</option>
+                                    <option value="2">Remeras</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="licence">License</label>
+                                <select
+                                    id="licence"
+                                    name="licence"
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select License</option>
+                                    <option value="1">Star Wars</option>
+                                    <option value="2">Pokemon</option>
+                                    <option value="3">Harry Potter</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    {/* Price */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="price">Precio:</label>
-                        <input id="price" name="price" type="number" onChange={handleChange} placeholder="0.00" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                    {/* Stock */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="stock">Stock:</label>
-                        <input id="stock" name="stock" type="number" onChange={handleChange} placeholder="0" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-[4rem]">
-                    {/* Discount */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="discount">Descuento:</label>
-                        <input id="discount" name="discount" type="number" onChange={handleChange} placeholder="0%" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
+                    {/* Pricing Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Pricing & Inventory</h2>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="price">Price ($)</label>
+                                <input
+                                    id="price"
+                                    name="price"
+                                    type="number"
+                                    onChange={handleChange}
+                                    placeholder="0.00"
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-500" htmlFor="stock">Stock</label>
+                                    <input
+                                        id="stock"
+                                        name="stock"
+                                        type="number"
+                                        onChange={handleChange}
+                                        placeholder="0"
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-500" htmlFor="discount">Discount (%)</label>
+                                    <input
+                                        id="discount"
+                                        name="discount"
+                                        type="number"
+                                        onChange={handleChange}
+                                        placeholder="0"
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="dues">Installments</label>
+                                <select
+                                    id="dues"
+                                    name="dues"
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select Option</option>
+                                    <option value="3">3 Cuotas sin interes</option>
+                                    <option value="6">6 Cuotas sin interes</option>
+                                    <option value="12">12 Cuotas sin interes</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    {/* Installments (Cuotas) */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="dues">Cuotas:</label>
-                        <select id="dues" name="dues" onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="3">3 Cuotas sin interes</option>
-                            <option value="6">6 Cuotas sin interes</option>
-                            <option value="12">12 Cuotas sin interes</option>
-                        </select>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-3 pt-4">
+                        <button
+                            type="submit"
+                            className="w-full bg-primary hover:bg-rose-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-rose-600/30 transition-all text-sm uppercase tracking-wide"
+                        >
+                            Publish Product
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({
+                                category: '', licence: '', product_name: '', product_description: '',
+                                sku: '', price: '', stock: '', discount: '', dues: '',
+                                image_front: '', image_back: ''
+                            })}
+                            className="w-full bg-white border border-gray-200 text-gray-500 py-3 rounded-xl font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-wide"
+                        >
+                            Reset Form
+                        </button>
                     </div>
-                </div>
-
-                {/* Images */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="image_front">URL Imagen Frente:</label>
-                    <input type="text" name="image_front" id="image_front" onChange={handleChange} placeholder="https://..." className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="image_back">URL Imagen Dorso:</label>
-                    <input type="text" name="image_back" id="image_back" onChange={handleChange} placeholder="https://..." className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-
-                <div className="flex gap-[2rem] mt-[2rem]">
-                    <button type="submit" className="bg-primary text-white px-[3.2rem] py-[1.2rem] text-[1.6rem] font-medium hover:bg-primary-900 transition-colors uppercase">Agregar Producto</button>
-                    <button type="button" onClick={() => setFormData({
-                        category: '', licence: '', product_name: '', product_description: '',
-                        sku: '', price: '', stock: '', discount: '', dues: '',
-                        image_front: '', image_back: ''
-                    })} className="bg-dark-bg text-white px-[3.2rem] py-[1.2rem] text-[1.6rem] font-medium hover:bg-gray-700 transition-colors uppercase">Limpiar</button>
                 </div>
             </form>
         </div>

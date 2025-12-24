@@ -39,6 +39,12 @@ const adminControllers = {
         });
     }),
 
+    // Get All Orders
+    getOrders: asyncHandler(async (req, res) => {
+        const orders = await orderService.getAllOrders();
+        res.json(orders);
+    }),
+
     // Reports: Downloadable Data
     getReports: asyncHandler(async (req, res) => {
         const { period } = req.query;

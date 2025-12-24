@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useAuth } from "@/context/AuthContext";
+import { useAdminAuth } from "@/context/AdminAuthContext";
 import Swal from "sweetalert2";
 
 export default function EditProduct({ params }: { params: Promise<{ product_id: string }> }) {
     const { product_id } = use(params);
     const router = useRouter();
-    const { token } = useAuth();
+    const { token } = useAdminAuth();
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         category_id: '',
@@ -89,121 +89,248 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
         }
     };
 
-    if (loading) return <div className="container py-10 text-center text-[2rem]">Cargando...</div>;
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+    );
 
     return (
-        <div className="container py-[4rem] text-dark px-[2.4rem] min-[1000px]:px-[12rem]">
-            <div className="flex items-center gap-4 mb-[4rem]">
-                <Link href="/admin/dashboard" className="text-gray-500 hover:text-dark-bg">
-                    <FaArrowLeft size={24} />
+        <div className="animate-fade-in-up max-w-[1200px] mx-auto pb-12">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <div className="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
+                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+                        <span>/</span>
+                        <span>Products</span>
+                        <span>/</span>
+                        <span className="text-gray-900">Edit</span>
+                    </div>
+                    <div className="flex items-baseline gap-3">
+                        <h1 className="text-2xl font-black text-dark-bg tracking-tight">Edit Product</h1>
+                        <span className="text-sm font-mono text-gray-400">#{product_id}</span>
+                    </div>
+                    <p className="text-gray-500 text-sm mt-1">Update product details and inventory.</p>
+                </div>
+                <Link
+                    href="/admin/dashboard"
+                    className="flex items-center gap-2 text-gray-500 hover:text-dark-bg transition-colors font-medium text-sm"
+                >
+                    <FaArrowLeft />
+                    <span>Back to Dashboard</span>
                 </Link>
-                <h1 className="text-[3.2rem] font-bold uppercase">EDITAR ITEM #{product_id}</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="max-w-[1000px] flex flex-col gap-[4rem]">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-[4rem]">
-                    {/* Category */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="category_id">Categoría:</label>
-                        <select id="category_id" name="category_id" value={formData.category_id} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="1">Figuras</option>
-                            <option value="2">Remeras</option>
-                        </select>
-                    </div>
-                    {/* License */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="licence_id">Licencia:</label>
-                        <select id="licence_id" name="licence_id" value={formData.licence_id} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="1">Star Wars</option>
-                            <option value="2">Pokemon</option>
-                            <option value="3">Harry Potter</option>
-                        </select>
-                    </div>
-                </div>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Info Column */}
+                <div className="lg:col-span-2 flex flex-col gap-6">
+                    {/* Basic Details Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                        <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-primary rounded-full"></span>
+                            Basic Information
+                        </h2>
 
-                {/* Name */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="product_name">Nombre del producto:</label>
-                    <input type="text" id="product_name" name="product_name" value={formData.product_name} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-
-                {/* Description */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="product_description">Descripción:</label>
-                    <textarea id="product_description" name="product_description" value={formData.product_description} onChange={handleChange} rows={6} placeholder="Descripción del producto" className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400 resize-none"></textarea>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-[4rem]">
-                    {/* SKU */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="sku">SKU:</label>
-                        <input id="sku" name="sku" type="text" value={formData.sku} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                    {/* Price */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="price">Precio:</label>
-                        <input id="price" name="price" type="number" value={formData.price} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                    {/* Stock */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="stock">Stock:</label>
-                        <input id="stock" name="stock" type="number" value={formData.stock} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-[4rem]">
-                    {/* Discount */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="discount">Descuento:</label>
-                        <input id="discount" name="discount" type="number" value={formData.discount} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                    </div>
-                    {/* Installments */}
-                    <div className="flex flex-col gap-[1rem]">
-                        <label className="text-[1.8rem] font-medium" htmlFor="dues">Cuotas:</label>
-                        <select id="dues" name="dues" value={formData.dues} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] bg-white outline-none cursor-pointer">
-                            <option value="">Seleccionar</option>
-                            <option value="3">3 Cuotas sin interés</option>
-                            <option value="6">6 Cuotas sin interés</option>
-                            <option value="12">12 Cuotas sin interés</option>
-                        </select>
-                    </div>
-                </div>
-
-                {/* Images */}
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="image_front">URL Imagen Frente:</label>
-                    <input type="text" id="image_front" name="image_front" value={formData.image_front} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-                <div className="flex flex-col gap-[1rem]">
-                    <label className="text-[1.8rem] font-medium" htmlFor="image_back">URL Imagen Dorso:</label>
-                    <input type="text" id="image_back" name="image_back" value={formData.image_back} onChange={handleChange} className="border border-dark rounded-[10px] px-[1.6rem] py-[0.8rem] text-[1.6rem] outline-none placeholder:text-gray-400" />
-                </div>
-
-                {/* Current Images Preview */}
-                <div className="flex gap-[4rem] justify-center mt-4">
-                    {formData.image_front && (formData.image_front.startsWith('http') || formData.image_front.startsWith('/')) && (
-                        <div className="flex flex-col gap-[1rem] items-center">
-                            <div className="relative w-[150px] h-[150px]">
-                                <Image src={formData.image_front} alt="Frente" fill className="object-contain" sizes="150px" />
+                        <div className="flex flex-col gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_name">Product Name</label>
+                                    <input
+                                        type="text"
+                                        id="product_name"
+                                        name="product_name"
+                                        value={formData.product_name}
+                                        onChange={handleChange}
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="sku">SKU Code</label>
+                                    <input
+                                        id="sku"
+                                        name="sku"
+                                        type="text"
+                                        value={formData.sku}
+                                        onChange={handleChange}
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300 font-mono"
+                                    />
+                                </div>
                             </div>
-                            <p className="text-[1.6rem] font-medium text-secondary">Frente</p>
-                        </div>
-                    )}
-                    {formData.image_back && (formData.image_back.startsWith('http') || formData.image_back.startsWith('/')) && (
-                        <div className="flex flex-col gap-[1rem] items-center">
-                            <div className="relative w-[150px] h-[150px]">
-                                <Image src={formData.image_back} alt="Dorso" fill className="object-contain" sizes="150px" />
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_description">Description</label>
+                                <textarea
+                                    id="product_description"
+                                    name="product_description"
+                                    value={formData.product_description}
+                                    onChange={handleChange}
+                                    rows={6}
+                                    placeholder="Detailed description of the product..."
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300 resize-none"
+                                ></textarea>
                             </div>
-                            <p className="text-[1.6rem] font-medium text-secondary">Dorso</p>
                         </div>
-                    )}
+                    </div>
+
+                    {/* Media Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                        <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <span className="w-1 h-6 bg-primary rounded-full"></span>
+                            Product Images
+                        </h2>
+                        <div className="space-y-6">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_front">Front Image URL</label>
+                                <input
+                                    type="text"
+                                    id="image_front"
+                                    name="image_front"
+                                    value={formData.image_front}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_back">Back Image URL</label>
+                                <input
+                                    type="text"
+                                    id="image_back"
+                                    name="image_back"
+                                    value={formData.image_back}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300"
+                                />
+                            </div>
+
+                            {/* Current Images Preview */}
+                            <div className="grid grid-cols-2 gap-6 mt-4 pt-4 border-t border-gray-50">
+                                {formData.image_front && (
+                                    <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <div className="relative w-32 h-32">
+                                            <Image src={formData.image_front} alt="Frente" fill className="object-contain" sizes="150px" />
+                                        </div>
+                                        <span className="text-xs font-bold text-gray-500 uppercase">Front View</span>
+                                    </div>
+                                )}
+                                {formData.image_back && (
+                                    <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                        <div className="relative w-32 h-32">
+                                            <Image src={formData.image_back} alt="Dorso" fill className="object-contain" sizes="150px" />
+                                        </div>
+                                        <span className="text-xs font-bold text-gray-500 uppercase">Back View</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" className="bg-primary text-white px-[2.4rem] py-[0.8rem] text-[1.6rem] font-medium hover:bg-primary-900 transition-colors uppercase self-center w-full md:w-auto">
-                    Modificar Producto
-                </button>
+                {/* Sidebar Column */}
+                <div className="flex flex-col gap-6">
+                    {/* Organization Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Organization</h2>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="category_id">Category</label>
+                                <select
+                                    id="category_id"
+                                    name="category_id"
+                                    value={formData.category_id}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="1">Figuras</option>
+                                    <option value="2">Remeras</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="licence_id">License</label>
+                                <select
+                                    id="licence_id"
+                                    name="licence_id"
+                                    value={formData.licence_id}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select License</option>
+                                    <option value="1">Star Wars</option>
+                                    <option value="2">Pokemon</option>
+                                    <option value="3">Harry Potter</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pricing Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Pricing & Inventory</h2>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="price">Price ($)</label>
+                                <input
+                                    id="price"
+                                    name="price"
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-500" htmlFor="stock">Stock</label>
+                                    <input
+                                        id="stock"
+                                        name="stock"
+                                        type="number"
+                                        value={formData.stock}
+                                        onChange={handleChange}
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-500" htmlFor="discount">Discount (%)</label>
+                                    <input
+                                        id="discount"
+                                        name="discount"
+                                        type="number"
+                                        value={formData.discount}
+                                        onChange={handleChange}
+                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-500" htmlFor="dues">Installments</label>
+                                <select
+                                    id="dues"
+                                    name="dues"
+                                    value={formData.dues}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                                >
+                                    <option value="">Select Option</option>
+                                    <option value="3">3 Cuotas sin interés</option>
+                                    <option value="6">6 Cuotas sin interés</option>
+                                    <option value="12">12 Cuotas sin interés</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-3 pt-4">
+                        <button
+                            type="submit"
+                            className="w-full bg-primary hover:bg-rose-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-rose-600/30 transition-all text-sm uppercase tracking-wide"
+                        >
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
     );
