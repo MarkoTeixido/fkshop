@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 
 class ShopService {
     async getShopProducts(query) {
-        const { search, min, max, sort, offers, special } = query;
+        const { search, min, max, sort, offers, special, category } = query;
         const isNew = query.new;
 
         const whereClause = { is_active: true };
@@ -35,6 +35,10 @@ class ShopService {
             whereClause.is_featured = true;
         }
 
+        if (category) {
+            whereClause['$Licence.licence_name$'] = category;
+        }
+
         if (isNew === 'true') {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -48,10 +52,27 @@ class ShopService {
         if (sort === 'alpha-ascending') orderClause = [['product_name', 'ASC']];
         if (sort === 'alpha-descending') orderClause = [['product_name', 'DESC']];
 
-        return await productRepository.findAll({
+        // Pagination
+        const page = parseInt(query.page) || 1;
+        const limit = parseInt(query.limit) || 9;
+        const offset = (page - 1) * limit;
+
+        const { count, rows } = await productRepository.findAndCountAll({
             where: whereClause,
-            order: orderClause
+            order: orderClause,
+            limit,
+            offset
         });
+
+        return {
+            data: rows,
+            pagination: {
+                total: count,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page,
+                limit
+            }
+        };
     }
 }
 

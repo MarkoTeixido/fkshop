@@ -17,6 +17,20 @@ class ProductRepository {
         });
     }
 
+    async findAndCountAll(options = {}) {
+        return await product.findAndCountAll({
+            where: options.where || {},
+            include: [
+                { model: category, attributes: ['category_name'] },
+                { model: licence, attributes: ['licence_name'] }
+            ],
+            order: options.order || [],
+            limit: options.limit,
+            offset: options.offset,
+            distinct: true // Important for correct count with includes
+        });
+    }
+
     async findById(id) {
         return await product.findByPk(id, {
             include: [

@@ -1,10 +1,64 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPhone, FaEnvelope, FaLocationDot, FaPaperPlane } from "react-icons/fa6";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export default function Contact() {
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate loading for consistency
+        const timer = setTimeout(() => setLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="bg-dark-bg min-h-screen flex flex-col">
+                <main className="flex-grow pt-32 pb-20 px-4 relative overflow-hidden">
+                    {/* Background Details */}
+                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none translate-x-1/2 -translate-y-1/2" />
+                    <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -translate-x-1/2 translate-y-1/2" />
+
+                    <div className="container-custom relative z-10 max-w-5xl mx-auto">
+                        <div className="text-center mb-10 flex flex-col items-center">
+                            <div className="h-10 md:h-12 w-64 bg-white/10 rounded-lg mb-4 animate-pulse"></div>
+                            <div className="h-4 w-64 md:w-96 bg-white/5 rounded animate-pulse"></div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                            {/* Info Section Skeleton */}
+                            <div className="space-y-6">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="bg-white/5 border border-white/10 p-5 rounded-2xl animate-pulse flex items-center gap-4">
+                                        <div className="w-10 h-10 bg-white/10 rounded-lg shrink-0"></div>
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-white/10 rounded"></div>
+                                            <div className="h-3 w-40 bg-white/5 rounded"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Form Section Skeleton */}
+                            <div className="bg-white/5 border border-white/10 p-6 md:p-8 rounded-3xl h-[480px] animate-pulse">
+                                <div className="h-6 w-40 bg-white/10 rounded mb-8"></div>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="h-12 bg-white/5 rounded-lg"></div>
+                                        <div className="h-12 bg-white/5 rounded-lg"></div>
+                                    </div>
+                                    <div className="h-12 bg-white/5 rounded-lg"></div>
+                                    <div className="h-32 bg-white/5 rounded-lg"></div>
+                                    <div className="h-12 bg-white/10 rounded-lg mt-2 w-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-dark-bg min-h-screen flex flex-col">
             <main className="flex-grow pt-32 pb-20 px-4 relative overflow-hidden">

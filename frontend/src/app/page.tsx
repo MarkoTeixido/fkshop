@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductSlider from "@/components/ProductSlider";
 import Header from "@/components/Header";
+import FunkoQuiz from "@/components/FunkoQuiz";
 import Footer from "@/components/Footer";
 
 // Fallback products (Replace with real data hook later if needed)
@@ -24,7 +25,9 @@ async function getProducts() {
             price: item.price,
             imageFront: item.image_front,
             imageBack: item.image_back,
-            tag: "NUEVO",
+            discount: item.discount, // Pass discount
+            created_at: item.created_at, // Pass date for "New" logic
+            // tag: "NUEVO", // Removed hardcoded tag
             installments: "3 CUOTAS SIN INTERÉS",
             stock: item.stock
         }));
@@ -135,39 +138,8 @@ export default async function Home() {
                 </section>
 
                 {/* "Which Pop Are You?" / Interactive Section */}
-                <section className="py-32 bg-primary relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10 bg-[url('https://res.cloudinary.com/dp7jr9k94/image/upload/v1765590925/isotype_jca7v6.svg')] bg-repeat space"></div>
-                    <div className="container-custom relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
-                        <div className="text-center md:text-left max-w-2xl">
-                            <span className="bg-black/20 text-white px-4 py-2 rounded-full font-bold text-sm mb-6 inline-block">QUIZ DIVERTIDO</span>
-                            <h2 className="text-5xl md:text-6xl font-black text-white uppercase italic mb-6">¿Qué Pop! <br /> Eres Tú?</h2>
-                            <p className="text-white/90 text-xl font-medium mb-8">Responde 3 preguntas rápidas para descubrir tu Funko ideal y obtener un código de descuento personalizado.</p>
-                            <button className="bg-white text-primary text-xl font-bold px-10 py-4 rounded-full shadow-2xl hover:bg-gray-100 transition-colors">
-                                Comenzar Quiz
-                            </button>
-                        </div>
-
-                        {/* Interactive Card Mockup */}
-                        <div className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                            <div className="flex justify-between items-center mb-6">
-                                <span className="text-gray-400 font-bold text-xs uppercase">Pregunta 1 de 3</span>
-                                <span className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-primary font-bold">?</span>
-                            </div>
-                            <h4 className="text-2xl font-bold text-gray-900 mb-6">¿Cuál es tu actividad ideal de fin de semana?</h4>
-                            <div className="space-y-3">
-                                <div className="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-primary cursor-pointer transition-all flex items-center justify-between group">
-                                    <span className="font-medium text-gray-700 group-hover:text-primary">Combatir el Crimen</span>
-                                </div>
-                                <div className="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-primary cursor-pointer transition-all flex items-center justify-between group">
-                                    <span className="font-medium text-gray-700 group-hover:text-primary">Lanzar Hechizos</span>
-                                </div>
-                                <div className="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-primary cursor-pointer transition-all flex items-center justify-between group">
-                                    <span className="font-medium text-gray-700 group-hover:text-primary">Viajar al Espacio</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {/* "Which Pop Are You?" / Interactive Section */}
+                <FunkoQuiz products={products} />
 
                 {/* Newsletter / Club */}
                 <section className="py-24 bg-dark-bg">

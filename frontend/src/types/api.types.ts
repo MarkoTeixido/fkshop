@@ -13,8 +13,10 @@ export interface ApiError {
 
 export interface PaginatedResponse<T> {
     data: T[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+    pagination: {
+        total: number;
+        totalPages: number;
+        currentPage: number;
+        limit: number;
+    }
 }

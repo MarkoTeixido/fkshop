@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const { user, logout } = useAuth();
     const pathname = usePathname();
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Handle Scroll
     useEffect(() => {
@@ -26,6 +27,23 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Handle Click Outside Dropdown
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        if (isUserMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isUserMenuOpen]);
 
     // Lock Body Scroll
     useEffect(() => {
@@ -122,7 +140,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                         )}
 
                         {user ? (
-                            <div className="relative">
+                            <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                     className="flex items-center gap-2 text-white hover:text-primary transition-colors"
@@ -142,6 +160,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                                             className="absolute top-full right-0 mt-4 w-48 bg-[#141414] border border-white/10 rounded-lg shadow-xl overflow-hidden py-2"
                                         >
                                             <Link href="/shop/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Mi Perfil</Link>
+                                            <Link href="/shop/wishlist" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Lista de Deseos</Link>
                                             <Link href="/shop/orders" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Mis Pedidos</Link>
                                             <button
                                                 onClick={logout}
@@ -203,6 +222,11 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                                     <motion.li variants={itemVariants}>
                                         <Link href="/shop/profile" onClick={() => setIsMobileMenuOpen(false)} className="text-xl text-gray-300">
                                             Mi Perfil
+                                        </Link>
+                                    </motion.li>
+                                    <motion.li variants={itemVariants}>
+                                        <Link href="/shop/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="text-xl text-gray-300">
+                                            Lista de Deseos
                                         </Link>
                                     </motion.li>
                                     <motion.li variants={itemVariants}>

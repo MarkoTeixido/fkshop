@@ -17,6 +17,9 @@ interface ShopSidebarProps {
     setFilterOffers: (value: boolean) => void;
     filterSpecial: boolean;
     setFilterSpecial: (value: boolean) => void;
+    categories: string[];
+    selectedCategory: string;
+    setSelectedCategory: (value: string) => void;
 }
 
 export default function ShopSidebar({
@@ -26,24 +29,24 @@ export default function ShopSidebar({
     maxPrice, setMaxPrice,
     filterNew, setFilterNew,
     filterOffers, setFilterOffers,
-    filterSpecial, setFilterSpecial
+    filterSpecial, setFilterSpecial,
+    categories = [], selectedCategory, setSelectedCategory
 }: ShopSidebarProps) {
     return (
         <aside className="w-full md:w-[280px] shrink-0 flex flex-col gap-10 bg-dark-surface p-8 rounded-2xl border border-white/5 h-fit">
             <div className="flex items-center gap-2 text-primary border-b border-white/10 pb-4">
                 <FaFilter size={18} />
-                <h2 className="text-xl font-bold uppercase tracking-wider">Filters</h2>
+                <h2 className="text-xl font-bold uppercase tracking-wider">Filtros</h2>
             </div>
 
             {/* Search */}
             <div className="flex flex-col gap-3">
-                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Search</label>
+                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Buscar</label>
                 <div className="relative group">
-                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors" />
                     <input
                         className="w-full bg-dark-bg border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-600"
                         type="text"
-                        placeholder="Search products..."
+                        placeholder="Buscar productos..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -52,18 +55,18 @@ export default function ShopSidebar({
 
             {/* Order */}
             <div className="flex flex-col gap-3">
-                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Sort By</label>
+                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Ordenar por</label>
                 <div className="relative">
                     <select
                         className="w-full appearance-none bg-dark-bg border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary cursor-pointer hover:border-white/20 transition-colors"
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
                     >
-                        <option value="">Default</option>
-                        <option value="price-ascending">Price: Low to High</option>
-                        <option value="price-descending">Price: High to Low</option>
-                        <option value="alpha-ascending">Name: A-Z</option>
-                        <option value="alpha-descending">Name: Z-A</option>
+                        <option value="">Por defecto</option>
+                        <option value="price-ascending">Precio: Menor a Mayor</option>
+                        <option value="price-descending">Precio: Mayor a Menor</option>
+                        <option value="alpha-ascending">Nombre: A-Z</option>
+                        <option value="alpha-descending">Nombre: Z-A</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-xs">▼</div>
                 </div>
@@ -71,7 +74,7 @@ export default function ShopSidebar({
 
             {/* Price */}
             <div className="flex flex-col gap-4">
-                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Price Range</label>
+                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Precio</label>
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">$</span>
@@ -99,16 +102,40 @@ export default function ShopSidebar({
                 </div>
             </div>
 
-            {/* Filter */}
+            {/* Categories (Licences) */}
             <div className="flex flex-col gap-4">
-                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Categories</label>
+                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Categorías</label>
+                <div className="flex flex-col gap-2">
+                    <label className={cn("flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors -mx-2", selectedCategory === "" && "bg-white/5")}>
+                        <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center transition-colors", selectedCategory === "" ? "border-primary bg-primary" : "border-gray-600 bg-transparent group-hover:border-primary")}>
+                            {selectedCategory === "" && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                        </div>
+                        <input type="radio" className="hidden" checked={selectedCategory === ""} onChange={() => setSelectedCategory("")} />
+                        <span className={cn("text-sm transition-colors", selectedCategory === "" ? "text-white font-bold" : "text-gray-400 group-hover:text-white")}>Todas</span>
+                    </label>
+
+                    {categories.map((cat) => (
+                        <label key={cat} className={cn("flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors -mx-2", selectedCategory === cat && "bg-white/5")}>
+                            <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center transition-colors", selectedCategory === cat ? "border-primary bg-primary" : "border-gray-600 bg-transparent group-hover:border-primary")}>
+                                {selectedCategory === cat && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                            </div>
+                            <input type="radio" className="hidden" checked={selectedCategory === cat} onChange={() => setSelectedCategory(cat)} />
+                            <span className={cn("text-sm transition-colors", selectedCategory === cat ? "text-white font-bold" : "text-gray-400 group-hover:text-white")}>{cat}</span>
+                        </label>
+                    ))}
+                </div>
+            </div>
+
+            {/* Tags / Status */}
+            <div className="flex flex-col gap-4">
+                <label className="text-sm font-bold text-gray-400 uppercase tracking-widest">Filtros</label>
                 <div className="flex flex-col gap-3">
                     <label className="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors -mx-2">
                         <div className={cn("w-5 h-5 rounded border flex items-center justify-center transition-colors", filterNew ? "bg-primary border-primary" : "border-gray-600 bg-transparent group-hover:border-primary")}>
                             {filterNew && <span className="text-white text-xs">✓</span>}
                         </div>
                         <input type="checkbox" className="hidden" checked={filterNew} onChange={(e) => setFilterNew(e.target.checked)} />
-                        <span className={cn("text-sm transition-colors", filterNew ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>New Arrivals</span>
+                        <span className={cn("text-sm transition-colors", filterNew ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>Nuevos</span>
                     </label>
 
                     <label className="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors -mx-2">
@@ -116,7 +143,7 @@ export default function ShopSidebar({
                             {filterOffers && <span className="text-white text-xs">✓</span>}
                         </div>
                         <input type="checkbox" className="hidden" checked={filterOffers} onChange={(e) => setFilterOffers(e.target.checked)} />
-                        <span className={cn("text-sm transition-colors", filterOffers ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>Special Offers</span>
+                        <span className={cn("text-sm transition-colors", filterOffers ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>Ofertas</span>
                     </label>
 
                     <label className="flex items-center gap-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-colors -mx-2">
@@ -124,7 +151,7 @@ export default function ShopSidebar({
                             {filterSpecial && <span className="text-white text-xs">✓</span>}
                         </div>
                         <input type="checkbox" className="hidden" checked={filterSpecial} onChange={(e) => setFilterSpecial(e.target.checked)} />
-                        <span className={cn("text-sm transition-colors", filterSpecial ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>Limited Edition</span>
+                        <span className={cn("text-sm transition-colors", filterSpecial ? "text-white font-medium" : "text-gray-400 group-hover:text-white")}>Edición Especial</span>
                     </label>
                 </div>
             </div>
@@ -138,10 +165,11 @@ export default function ShopSidebar({
                     setFilterNew(false);
                     setFilterOffers(false);
                     setFilterSpecial(false);
+                    setSelectedCategory("");
                 }}
                 className="mt-4 text-xs font-bold text-gray-500 hover:text-white underline uppercase tracking-widest transition-colors self-center"
             >
-                Clear All Filters
+                Limpiar Filtros
             </button>
         </aside>
     );

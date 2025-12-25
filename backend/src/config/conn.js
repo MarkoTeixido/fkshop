@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
 async function testConnection() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync(); // Sync models with DB
+    await sequelize.sync({ alter: true }); // Sync models with DB and update schema
     console.log('✅ Conexión exitosa a la base de datos');
   } catch (error) {
     console.error('❌ Error al autenticar la conexión:', error);

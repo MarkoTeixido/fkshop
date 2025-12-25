@@ -4,10 +4,10 @@ import { PaginatedResponse } from '@/types/api.types';
 
 export const productService = {
     // Public Shop Endpoints
-    getAll: async (params?: Record<string, string | number>): Promise<Product[]> => {
+    getAll: async (params?: Record<string, string | number>): Promise<PaginatedResponse<Product>> => {
         // Backend currently returns all products or filtered by query.
         // Assuming /shop returns list.
-        const response = await api.get<Product[]>('/shop', { params });
+        const response = await api.get<PaginatedResponse<Product>>('/shop', { params });
         return response.data; // return data array
     },
 

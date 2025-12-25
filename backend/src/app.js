@@ -8,6 +8,7 @@ const mainRoutes = require('./router/mainRoutes');
 const shopRoutes = require('./router/shopRoutes');
 const adminRoutes = require('./router/adminRoutes');
 const authRoutes = require('./router/authRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/', mainRoutes);
 app.use('/shop', shopRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
+app.use('/wishlist', wishlistRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

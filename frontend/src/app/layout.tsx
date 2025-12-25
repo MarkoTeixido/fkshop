@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 export default function RootLayout({
   children,
@@ -37,7 +38,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ToastProvider>
-            {children}
+            <WishlistProvider>
+              {children}
+            </WishlistProvider>
           </ToastProvider>
         </AuthProvider>
       </body>

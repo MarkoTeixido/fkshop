@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { authUtils } from '@/utils/auth.utils';
 import { ApiError } from '@/types/api.types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -30,6 +30,9 @@ api.interceptors.request.use(
 
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
+            console.log('🔑 [API] Attaching Token:', token.substring(0, 10) + '...');
+        } else {
+            console.log('⚠️ [API] No token found for request to:', url);
         }
         return config;
     },
@@ -51,7 +54,7 @@ api.interceptors.response.use(
             // Server responded with error
             const data = error.response.data as any;
             apiError = {
-                message: data.message || error.message,
+                message: data.message || data.error || error.message,
                 status: error.response.status,
                 errors: data.errors,
             };
@@ -70,6 +73,13 @@ api.interceptors.response.use(
             // Setup error
             apiError.message = error.message;
         }
+
+        console.error('🔥 [API Error Debug]', JSON.stringify({
+            status: error.response?.status,
+            data: error.response?.data,
+            message: apiError.message,
+            rawError: error.toJSON ? error.toJSON() : error
+        }, null, 2));
 
         console.error('API Error:', apiError);
         return Promise.reject(apiError);

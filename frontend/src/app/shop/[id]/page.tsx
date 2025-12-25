@@ -24,7 +24,10 @@ export default function ProductDetailPage() {
             try {
                 setLoading(true);
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/item/${id}`);
-                if (!res.ok) throw new Error("Product not found");
+                if (!res.ok) {
+                    setProduct(null);
+                    return;
+                }
                 const data = await res.json();
 
                 // The backend returns { product: {...}, related: [...] }

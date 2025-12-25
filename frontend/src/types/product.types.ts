@@ -19,6 +19,8 @@ export interface Product {
     updated_at?: string;
     licence?: string;
     category?: string;
+    Licence?: Licence; // Backend often sends capitalized Licence object
+    category_name?: string;
 }
 
 export interface ProductDTO extends Omit<Product, 'product_id' | 'created_at' | 'updated_at'> {

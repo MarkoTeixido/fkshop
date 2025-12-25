@@ -132,8 +132,54 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+            <div className="min-h-screen bg-dark-bg pt-32 pb-20 relative overflow-hidden">
+                <div className="container-custom relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        {/* Profile Card Skeleton */}
+                        <div className="lg:col-span-4">
+                            <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 animate-pulse h-[500px]">
+                                <div className="flex flex-col items-center mb-8">
+                                    <div className="w-32 h-32 bg-white/10 rounded-full mb-6"></div>
+                                    <div className="h-8 w-48 bg-white/10 rounded mb-2"></div>
+                                    <div className="h-4 w-32 bg-white/5 rounded"></div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="h-16 bg-white/5 rounded-xl"></div>
+                                    <div className="h-16 bg-white/5 rounded-xl"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content Skeleton */}
+                        <div className="lg:col-span-8 space-y-12">
+                            {/* Header Skeleton */}
+                            <div className="border-b border-white/10 pb-8">
+                                <div className="h-12 w-64 bg-white/10 rounded mb-4 animate-pulse"></div>
+                                <div className="h-6 w-96 bg-white/5 rounded animate-pulse"></div>
+                            </div>
+
+                            {/* Orders List Skeleton */}
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center mb-8">
+                                    <div className="h-8 w-48 bg-white/10 rounded animate-pulse"></div>
+                                    <div className="h-6 w-24 bg-white/10 rounded-full animate-pulse"></div>
+                                </div>
+                                {[1, 2].map((i) => (
+                                    <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 animate-pulse">
+                                        <div className="flex justify-between mb-6">
+                                            <div className="space-y-2">
+                                                <div className="h-6 w-32 bg-white/10 rounded"></div>
+                                                <div className="h-4 w-48 bg-white/5 rounded"></div>
+                                            </div>
+                                            <div className="h-8 w-24 bg-white/10 rounded"></div>
+                                        </div>
+                                        <div className="h-24 bg-black/20 rounded-xl"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

@@ -26,11 +26,16 @@ export default function CheckoutPage() {
     const { user } = useAuth();
     const router = useRouter();
     const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
-    const [loading, setLoading] = useState(false);
+    const [processingPayment, setProcessingPayment] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
     const [orderId, setOrderId] = useState<string | null>(null);
 
     useEffect(() => {
+        const timer = setTimeout(() => {
+            setInitialLoading(false);
+        }, 800);
         fetchCart();
+        return () => clearTimeout(timer);
     }, [fetchCart]);
 
     const [shippingData, setShippingData] = useState({
@@ -61,7 +66,7 @@ export default function CheckoutPage() {
 
     const handlePaymentSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setProcessingPayment(true);
 
         // Simulate network delay for "processing payment"
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -96,9 +101,64 @@ export default function CheckoutPage() {
             console.error(error);
             alert("Error de conexión");
         } finally {
-            setLoading(false);
+            setProcessingPayment(false);
         }
     };
+
+    if (initialLoading) {
+        return (
+            <div className="min-h-screen bg-dark-bg relative overflow-x-hidden pt-24 pb-20">
+                <div className="container-custom relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+                    {/* Header Skeleton */}
+                    <div className="mb-12">
+                        <div className="h-4 w-32 bg-white/10 rounded mb-4 animate-pulse"></div>
+                        <div className="h-16 w-3/4 bg-white/10 rounded animate-pulse"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+                        {/* Form Skeleton */}
+                        <div className="lg:col-span-7">
+                            <div className="flex items-center mb-10 space-x-4 animate-pulse">
+                                <div className="w-10 h-10 rounded-full bg-white/10"></div>
+                                <div className="h-4 w-16 bg-white/5 rounded"></div>
+                                <div className="h-0.5 w-16 bg-white/5"></div>
+                                <div className="w-10 h-10 rounded-full bg-white/5"></div>
+                            </div>
+                            <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] h-[500px] animate-pulse">
+                                <div className="h-8 w-1/2 bg-white/10 rounded mb-8"></div>
+                                <div className="space-y-6">
+                                    <div className="h-14 w-full bg-white/5 rounded-xl"></div>
+                                    <div className="h-14 w-full bg-white/5 rounded-xl"></div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="h-14 w-full bg-white/5 rounded-xl"></div>
+                                        <div className="h-14 w-full bg-white/5 rounded-xl"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Summary Skeleton */}
+                        <div className="lg:col-span-5">
+                            <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] h-[400px] animate-pulse">
+                                <div className="h-6 w-1/3 bg-white/10 rounded mb-8"></div>
+                                <div className="space-y-4">
+                                    <div className="flex gap-4">
+                                        <div className="w-20 h-20 bg-white/5 rounded-2xl"></div>
+                                        <div className="flex-1 space-y-2 py-2">
+                                            <div className="h-4 w-3/4 bg-white/10 rounded"></div>
+                                            <div className="h-3 w-1/2 bg-white/5 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-px bg-white/5 my-4"></div>
+                                    <div className="h-8 w-full bg-white/5 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (cartItems.length === 0 && step !== 3) {
         return (
@@ -278,10 +338,10 @@ export default function CheckoutPage() {
                                                 </button>
                                                 <button
                                                     type="submit"
-                                                    disabled={loading}
+                                                    disabled={processingPayment}
                                                     className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-all transform hover:scale-[1.02] shadow-lg shadow-green-500/25 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
-                                                    {loading ? (
+                                                    {processingPayment ? (
                                                         <>Procesando <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div></>
                                                     ) : (
                                                         <>Pagar ${subtotal.toFixed(2)} <FaCheckCircle /></>
