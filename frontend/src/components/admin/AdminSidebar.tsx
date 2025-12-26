@@ -1,25 +1,72 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { FaLayerGroup, FaBox, FaCartShopping, FaChartLine, FaUsers, FaGear, FaArrowRightFromBracket, FaRegBell } from "react-icons/fa6";
+import { FaLayerGroup, FaBox, FaCartShopping, FaChartLine, FaUsers, FaGear, FaArrowRightFromBracket, FaRegBell, FaTriangleExclamation } from "react-icons/fa6";
 import { useAdminAuth } from '@/context/AdminAuthContext';
+import { productService } from '@/services/product.service';
 
 const menuItems = [
-    { name: 'Dashboard', icon: FaLayerGroup, path: '/admin/dashboard' },
-    { name: 'Orders', icon: FaCartShopping, path: '/admin/orders' },
-    { name: 'Reports', icon: FaChartLine, path: '/admin/reports' },
-    { name: 'Settings', icon: FaGear, path: '/admin/settings' },
+    { name: 'Panel', icon: FaLayerGroup, path: '/admin/dashboard' },
+    { name: 'Pedidos', icon: FaCartShopping, path: '/admin/orders' },
+    { name: 'Reportes', icon: FaChartLine, path: '/admin/reports' },
+    { name: 'Configuración', icon: FaGear, path: '/admin/settings' },
 ];
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const { logout } = useAdminAuth();
+    const { logout, token } = useAdminAuth();
+
+    // Notification State
+    const [notifications, setNotifications] = useState<{ id: number, message: string }[]>([]);
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const notifRef = useRef<HTMLDivElement>(null);
+
+    // Fetch Low Stock Products
+    useEffect(() => {
+        if (!token) return;
+
+        const checkStock = async () => {
+            try {
+                // Using getAdminDashboard as it returns all products with stock info
+                const products = await productService.getAdminDashboard();
+                const lowStock = products.filter(p => p.stock < 5);
+
+                const newNotifs = lowStock.map(p => ({
+                    id: p.product_id,
+                    message: `Bajo stock: ${p.product_name} (${p.stock} u.)`
+                }));
+                setNotifications(newNotifs);
+            } catch (error) {
+                console.error("Error checking stock notifications", error);
+            }
+        };
+
+        checkStock();
+        // Optional: Interval to check periodically
+        const interval = setInterval(checkStock, 60000);
+        return () => clearInterval(interval);
+    }, [token]);
+
+    // Close on click outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+                setIsNotifOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleNotificationClick = (id: number) => {
+        // Remove notification from list (Mark as read locally)
+        setNotifications(prev => prev.filter(n => n.id !== id));
+    };
 
     return (
         <aside className="w-64 bg-[#1E1E1E] border-r border-white/5 flex flex-col h-screen fixed left-0 top-0 z-50 transition-all duration-300">
-            {/* Logo Area */}
             {/* Logo Area */}
             <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center">
                 <Link href="/admin/dashboard" className="flex flex-col items-center group">
@@ -33,7 +80,7 @@ export default function AdminSidebar() {
                         />
                     </div>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold group-hover:text-primary transition-colors duration-300">
-                        Admin Panel
+                        Panel Admin
                     </span>
                 </Link>
             </div>
@@ -53,11 +100,6 @@ export default function AdminSidebar() {
                         >
                             <item.icon className={`text-lg transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-white'}`} />
                             <span className="relative z-10">{item.name}</span>
-                            {item.name === 'Orders' && (
-                                <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg shadow-rose-500/20">
-                                    12
-                                </span>
-                            )}
                         </Link>
                     );
                 })}
@@ -66,16 +108,54 @@ export default function AdminSidebar() {
             {/* User Profile / Logout */}
             <div className="p-4 mt-auto border-t border-white/5 space-y-2">
                 {/* Notification Bell */}
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-left text-gray-400 hover:text-white group">
-                    <div className="w-10 h-10 rounded-full bg-dark-bg border border-white/10 flex items-center justify-center relative group-hover:border-primary/50 transition-colors">
-                        <FaRegBell size={18} />
-                        <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-[#1E1E1E]"></span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-bold">Notifications</span>
-                        <span className="text-xs text-rose-500 font-medium">3 New</span>
-                    </div>
-                </button>
+                <div className="relative" ref={notifRef}>
+                    <button
+                        onClick={() => setIsNotifOpen(!isNotifOpen)}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-left text-gray-400 hover:text-white group relative"
+                    >
+                        <div className="w-10 h-10 rounded-full bg-dark-bg border border-white/10 flex items-center justify-center relative group-hover:border-primary/50 transition-colors">
+                            <FaRegBell size={18} />
+                            {notifications.length > 0 && (
+                                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-[#1E1E1E]"></span>
+                            )}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-bold">Notificaciones</span>
+                            <span className="text-xs text-rose-500 font-medium">{notifications.length > 0 ? `${notifications.length} Nuevas` : 'Sin nuevas'}</span>
+                        </div>
+                    </button>
+
+                    {/* Notification Dropdown */}
+                    {isNotifOpen && (
+                        <div className="absolute bottom-full left-4 w-64 bg-white rounded-xl shadow-2xl mb-2 overflow-hidden z-50 animate-in slide-in-from-bottom-2">
+                            <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex justify-between items-center">
+                                <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Alertas</span>
+                                <span className="text-[10px] font-bold bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full">{notifications.length}</span>
+                            </div>
+                            <div className="max-h-60 overflow-y-auto">
+                                {notifications.length === 0 ? (
+                                    <div className="p-6 text-center text-gray-400 text-xs">
+                                        No hay notificaciones nuevas.
+                                    </div>
+                                ) : (
+                                    notifications.map(notif => (
+                                        <div
+                                            key={notif.id}
+                                            onClick={() => handleNotificationClick(notif.id)}
+                                            className="px-4 py-3 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer flex gap-3 items-start"
+                                        >
+                                            <div className="text-rose-500 mt-0.5"><FaTriangleExclamation /></div>
+                                            <div>
+                                                <p className="text-xs text-gray-600 font-medium leading-relaxed">{notif.message}</p>
+                                                <span className="text-[10px] text-primary font-bold mt-1 block">Marcar como leído</span>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 <button
                     onClick={logout}
@@ -86,7 +166,7 @@ export default function AdminSidebar() {
                     </div>
                     <div className="flex flex-col">
                         <span className="text-sm font-bold text-white group-hover:text-rose-500 transition-colors">Cerrar Sesión</span>
-                        <span className="text-xs text-gray-500">Admin User</span>
+                        <span className="text-xs text-gray-500">Administrador</span>
                     </div>
                 </button>
             </div>

@@ -87,28 +87,28 @@ export default function OrdersPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
-                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Panel</Link>
                         <span>/</span>
-                        <span className="text-gray-900">Orders</span>
+                        <span className="text-gray-900">Pedidos</span>
                     </div>
                     <div className="flex items-baseline gap-3">
-                        <h1 className="text-2xl font-black text-dark-bg tracking-tight">Recent Orders</h1>
+                        <h1 className="text-2xl font-black text-dark-bg tracking-tight">Pedidos Recientes</h1>
                         <span className="text-sm font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{orders.length} total</span>
                     </div>
-                    <p className="text-gray-500 text-sm mt-1">Manage and track customer orders.</p>
+                    <p className="text-gray-500 text-sm mt-1">Gestiona y rastrea los pedidos de clientes.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-50 hover:text-black transition-all shadow-sm">
                         <FaArrowDown />
-                        Export CSV
+                        Exportar CSV
                     </button>
                     <Link
                         href="/admin/dashboard"
                         className="flex items-center gap-2 bg-dark-bg text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-dark-bg/20 hover:bg-gray-800 transition-all"
                     >
                         <FaArrowLeft />
-                        Back
+                        Volver
                     </Link>
                 </div>
             </div>
@@ -123,28 +123,37 @@ export default function OrdersPage() {
                     </div>
                     <input
                         type="text"
-                        placeholder="Search by Order ID or Customer..."
+                        placeholder="Buscar por ID de Pedido o Cliente..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-gray-50 border-none rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-primary/20 placeholder:text-gray-400 transition-all outline-none"
+                        className="w-full bg-gray-5 border-none rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium text-gray-700 focus:bg-white focus:ring-2 focus:ring-primary/20 placeholder:text-gray-400 transition-all outline-none"
                     />
                 </div>
 
                 {/* Filters */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-                    {['all', 'paid', 'pending', 'shipped', 'cancelled'].map((status) => (
-                        <button
-                            key={status}
-                            onClick={() => setFilterStatus(status)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wide border transition-all whitespace-nowrap
+                    {['all', 'paid', 'pending', 'shipped', 'cancelled'].map((status) => {
+                        const statusMap: Record<string, string> = {
+                            all: 'todos',
+                            paid: 'pagado',
+                            pending: 'pendiente',
+                            shipped: 'enviado',
+                            cancelled: 'cancelado'
+                        };
+                        return (
+                            <button
+                                key={status}
+                                onClick={() => setFilterStatus(status)}
+                                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wide border transition-all whitespace-nowrap
                                 ${filterStatus === status
-                                    ? 'bg-dark-bg text-white border-dark-bg shadow-md'
-                                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                                }`}
-                        >
-                            {status}
-                        </button>
-                    ))}
+                                        ? 'bg-dark-bg text-white border-dark-bg shadow-md'
+                                        : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                    }`}
+                            >
+                                {statusMap[status] || status}
+                            </button>
+                        )
+                    })}
                 </div>
             </div>
 
@@ -154,13 +163,13 @@ export default function OrdersPage() {
                     <table className="w-full">
                         <thead className="bg-gray-50/50 border-b border-gray-100">
                             <tr>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Order ID</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Items</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">ID Pedido</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Ítems</th>
                                 <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Total</th>
-                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="text-right py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th className="text-left py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th className="text-right py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -188,7 +197,7 @@ export default function OrdersPage() {
                                         </td>
                                         <td className="py-4 px-6">
                                             <span className="text-sm text-gray-500 font-medium">
-                                                - items
+                                                - ítems
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
@@ -211,7 +220,7 @@ export default function OrdersPage() {
                                     <td colSpan={7} className="text-center py-12 text-gray-500">
                                         <div className="flex flex-col items-center gap-2">
                                             <FaFilter className="text-gray-300 text-4xl mb-2" />
-                                            <p className="font-medium">No orders found matching your filters.</p>
+                                            <p className="font-medium">No se encontraron pedidos con esos filtros.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -221,10 +230,10 @@ export default function OrdersPage() {
                 </div>
                 {/* Footer / Pagination Mockup */}
                 <div className="border-t border-gray-100 p-4 flex justify-between items-center bg-gray-50/30">
-                    <span className="text-xs text-gray-500 font-medium">Showing {filteredOrders.length} of {orders.length} orders</span>
+                    <span className="text-xs text-gray-500 font-medium">Mostrando {filteredOrders.length} de {orders.length} pedidos</span>
                     <div className="flex gap-2">
-                        <button className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50 disabled:opacity-50" disabled>Previous</button>
-                        <button className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50">Next</button>
+                        <button className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50 disabled:opacity-50" disabled>Anterior</button>
+                        <button className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50">Siguiente</button>
                     </div>
                 </div>
             </div>

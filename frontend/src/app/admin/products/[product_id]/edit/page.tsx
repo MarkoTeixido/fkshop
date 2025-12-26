@@ -119,24 +119,24 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-medium mb-1">
-                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
+                        <Link href="/admin/dashboard" className="hover:text-primary transition-colors">Panel</Link>
                         <span>/</span>
-                        <span>Products</span>
+                        <span>Productos</span>
                         <span>/</span>
-                        <span className="text-gray-900">Edit</span>
+                        <span className="text-gray-900">Editar</span>
                     </div>
                     <div className="flex items-baseline gap-3">
-                        <h1 className="text-2xl font-black text-dark-bg tracking-tight">Edit Product</h1>
+                        <h1 className="text-2xl font-black text-dark-bg tracking-tight">Editar Producto</h1>
                         <span className="text-sm font-mono text-gray-400">#{product_id}</span>
                     </div>
-                    <p className="text-gray-500 text-sm mt-1">Update product details and inventory.</p>
+                    <p className="text-gray-500 text-sm mt-1">Actualizar detalles e inventario del producto.</p>
                 </div>
                 <Link
                     href="/admin/dashboard"
                     className="flex items-center gap-2 text-gray-500 hover:text-dark-bg transition-colors font-medium text-sm"
                 >
                     <FaArrowLeft />
-                    <span>Back to Dashboard</span>
+                    <span>Volver al Panel</span>
                 </Link>
             </div>
 
@@ -147,13 +147,13 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
                         <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
                             <span className="w-1 h-6 bg-primary rounded-full"></span>
-                            Basic Information
+                            Información Básica
                         </h2>
 
                         <div className="flex flex-col gap-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_name">Product Name</label>
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_name">Nombre del Producto</label>
                                     <input
                                         type="text"
                                         id="product_name"
@@ -164,7 +164,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="sku">SKU Code</label>
+                                    <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="sku">Código SKU</label>
                                     <input
                                         id="sku"
                                         name="sku"
@@ -177,14 +177,14 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_description">Description</label>
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="product_description">Descripción</label>
                                 <textarea
                                     id="product_description"
                                     name="product_description"
                                     value={formData.product_description}
                                     onChange={handleChange}
                                     rows={6}
-                                    placeholder="Detailed description of the product..."
+                                    placeholder="Descripción detallada del producto..."
                                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-gray-300 resize-none"
                                 ></textarea>
                             </div>
@@ -195,11 +195,11 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
                         <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
                             <span className="w-1 h-6 bg-primary rounded-full"></span>
-                            Product Images
+                            Imágenes del Producto
                         </h2>
                         <div className="space-y-6">
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_front">Front Image URL</label>
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_front">URL Imagen Frontal</label>
                                 <input
                                     type="text"
                                     id="image_front"
@@ -210,7 +210,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_back">Back Image URL</label>
+                                <label className="text-xs font-bold text-gray-600 uppercase tracking-wider" htmlFor="image_back">URL Imagen Dorsal</label>
                                 <input
                                     type="text"
                                     id="image_back"
@@ -228,7 +228,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                         <div className="relative w-32 h-32">
                                             <Image src={formData.image_front} alt="Frente" fill className="object-contain" sizes="150px" />
                                         </div>
-                                        <span className="text-xs font-bold text-gray-500 uppercase">Front View</span>
+                                        <span className="text-xs font-bold text-gray-500 uppercase">Vista Frontal</span>
                                     </div>
                                 )}
                                 {formData.image_back && (
@@ -236,7 +236,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                         <div className="relative w-32 h-32">
                                             <Image src={formData.image_back} alt="Dorso" fill className="object-contain" sizes="150px" />
                                         </div>
-                                        <span className="text-xs font-bold text-gray-500 uppercase">Back View</span>
+                                        <span className="text-xs font-bold text-gray-500 uppercase">Vista Dorsal</span>
                                     </div>
                                 )}
                             </div>
@@ -248,10 +248,10 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                 <div className="flex flex-col gap-6">
                     {/* Organization Card */}
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Organization</h2>
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Organización</h2>
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500" htmlFor="category_id">Category</label>
+                                <label className="text-xs font-bold text-gray-500" htmlFor="category_id">Categoría</label>
                                 <select
                                     id="category_id"
                                     name="category_id"
@@ -259,7 +259,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                     onChange={handleChange}
                                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white text-gray-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
                                 >
-                                    <option value="">Select Category</option>
+                                    <option value="">Seleccionar Categoría</option>
                                     {categories.map((cat: any) => (
                                         <option key={cat.category_id} value={cat.category_id}>
                                             {cat.category_name}
@@ -268,7 +268,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                 </select>
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500" htmlFor="licence_id">License</label>
+                                <label className="text-xs font-bold text-gray-500" htmlFor="licence_id">Licencia</label>
                                 <select
                                     id="licence_id"
                                     name="licence_id"
@@ -276,7 +276,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                     onChange={handleChange}
                                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white text-gray-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
                                 >
-                                    <option value="">Select License</option>
+                                    <option value="">Seleccionar Licencia</option>
                                     {licences.map((lic: any) => (
                                         <option key={lic.licence_id} value={lic.licence_id}>
                                             {lic.licence_name}
@@ -289,10 +289,10 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
 
                     {/* Pricing Card */}
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Pricing & Inventory</h2>
+                        <h2 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Precio e Inventario</h2>
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500" htmlFor="price">Price ($)</label>
+                                <label className="text-xs font-bold text-gray-500" htmlFor="price">Precio ($)</label>
                                 <input
                                     id="price"
                                     name="price"
@@ -315,7 +315,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-500" htmlFor="discount">Discount (%)</label>
+                                    <label className="text-xs font-bold text-gray-500" htmlFor="discount">Descuento (%)</label>
                                     <input
                                         id="discount"
                                         name="discount"
@@ -327,7 +327,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                 </div>
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-500" htmlFor="dues">Installments</label>
+                                <label className="text-xs font-bold text-gray-500" htmlFor="dues">Cuotas</label>
                                 <select
                                     id="dues"
                                     name="dues"
@@ -335,7 +335,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                                     onChange={handleChange}
                                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white text-gray-900 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
                                 >
-                                    <option value="">Select Option</option>
+                                    <option value="">Seleccionar Opción</option>
                                     <option value="3">3 Cuotas sin interés</option>
                                     <option value="6">6 Cuotas sin interés</option>
                                     <option value="12">12 Cuotas sin interés</option>
@@ -350,7 +350,7 @@ export default function EditProduct({ params }: { params: Promise<{ product_id: 
                             type="submit"
                             className="w-full bg-primary hover:bg-rose-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-rose-600/30 transition-all text-sm uppercase tracking-wide"
                         >
-                            Save Changes
+                            Guardar Cambios
                         </button>
                     </div>
                 </div>

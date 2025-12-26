@@ -92,6 +92,7 @@ export default function AdminReports() {
     }, [token]);
 
     // --- Data Processing (Memoized) ---
+    // --- Data Processing (Memoized) ---
     const { kpis, salesData, statusData, topCustomers } = useMemo(() => {
         if (loading || orders.length === 0) return { kpis: [], salesData: [], statusData: [], topCustomers: [] };
 
@@ -113,27 +114,27 @@ export default function AdminReports() {
 
         const kpisList: KPI[] = [
             {
-                title: 'Total Revenue',
+                title: 'Ingresos Totales',
                 value: `$${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                subtitle: `${validOrders.length} successful orders`,
+                subtitle: `${validOrders.length} pedidos exitosos`,
                 icon: <FaSackDollar />,
             },
             {
-                title: 'Total Orders',
+                title: 'Pedidos Totales',
                 value: orderCount.toString(),
-                subtitle: 'Processed in period',
+                subtitle: 'Procesados en el periodo',
                 icon: <FaCartShopping />,
             },
             {
-                title: 'Avg. Order Value',
+                title: 'Ticket Promedio',
                 value: `$${aov.toFixed(2)}`,
-                subtitle: 'Revenue / Successful Orders',
+                subtitle: 'Ingreso / Pedidos Exitosos',
                 icon: <FaChartLine />,
             },
             {
-                title: 'Customers',
+                title: 'Clientes',
                 value: new Set(filteredOrders.map(o => o.User?.id)).size.toString(),
-                subtitle: 'Unique buyers',
+                subtitle: 'Compradores Únicos',
                 icon: <FaUserGroup />,
             }
         ];
@@ -184,20 +185,20 @@ export default function AdminReports() {
     const generatePDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(20);
-        doc.text(`Executive Sales Report`, 14, 22);
+        doc.text(`Reporte Ejecutivo de Ventas`, 14, 22);
 
         doc.setFontSize(10);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+        doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
 
         // Add Summary Stats
         const summary = [
-            ["Total Revenue", kpis[0]?.value || "$0"],
-            ["Total Orders", kpis[1]?.value || "0"],
-            ["Avg Order Value", kpis[2]?.value || "$0"]
+            ["Ingresos Totales", kpis[0]?.value || "$0"],
+            ["Pedidos Totales", kpis[1]?.value || "0"],
+            ["Ticket Promedio", kpis[2]?.value || "$0"]
         ];
 
         autoTable(doc, {
-            head: [['Metric', 'Value']],
+            head: [['Métrica', 'Valor']],
             body: summary,
             startY: 40,
             theme: 'striped',
@@ -214,14 +215,14 @@ export default function AdminReports() {
         ]);
 
         autoTable(doc, {
-            head: [["ID", "Date", "Customer", "Status", "Total"]],
+            head: [["ID", "Fecha", "Cliente", "Estado", "Total"]],
             body: tableRows,
             startY: (doc as any).lastAutoTable.finalY + 15,
             theme: 'grid',
             headStyles: { fillColor: [220, 38, 38] },
         });
 
-        doc.save('executive_report.pdf');
+        doc.save('reporte_ejecutivo.pdf');
     };
 
     const COLORS = ['#1f2937', '#dc2626', '#6b7280', '#e5e7eb']; // Dark, Red, Gray, Light Gray
@@ -238,8 +239,8 @@ export default function AdminReports() {
             {/* Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                 <div>
-                    <h1 className="text-3xl font-black text-dark-bg tracking-tight mb-2">Analytics Dashboard</h1>
-                    <p className="text-gray-500 font-medium">Overview of store performance and business insights.</p>
+                    <h1 className="text-3xl font-black text-dark-bg tracking-tight mb-2">Panel de Analíticas</h1>
+                    <p className="text-gray-500 font-medium">Visión general del rendimiento de la tienda.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -250,8 +251,8 @@ export default function AdminReports() {
                             onChange={(e) => setPeriod(e.target.value)}
                             className="appearance-none bg-white border border-gray-200 text-gray-700 py-2.5 px-4 pr-10 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
                         >
-                            <option value="all">All Time</option>
-                            <option value="month">Last 30 Days</option>
+                            <option value="all">Todo el Tiempo</option>
+                            <option value="month">Últimos 30 Días</option>
                         </select>
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                             <FaCalendarDays />
@@ -263,7 +264,7 @@ export default function AdminReports() {
                         className="flex items-center gap-2 bg-dark-bg text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-dark-bg/20 hover:bg-gray-800 transition-all"
                     >
                         <FaFilePdf />
-                        <span>Download Report</span>
+                        <span>Descargar Reporte</span>
                     </button>
                 </div>
             </div>
@@ -277,7 +278,7 @@ export default function AdminReports() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Main Revenue Chart */}
                 <div className="lg:col-span-2">
-                    <ChartCard title="Revenue Trends">
+                    <ChartCard title="Tendencias de Ingresos">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={salesData}>
                                 <defs>
@@ -291,7 +292,7 @@ export default function AdminReports() {
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
                                 <Tooltip
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                    formatter={(value: number | undefined) => [`$${(value || 0).toFixed(2)}`, 'Revenue']}
+                                    formatter={(value: number | undefined) => [`$${(value || 0).toFixed(2)}`, 'Ingresos']}
                                 />
                                 <Area type="monotone" dataKey="amount" stroke="#dc2626" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
                             </AreaChart>
@@ -301,7 +302,7 @@ export default function AdminReports() {
 
                 {/* Status Distribution */}
                 <div className="lg:col-span-1">
-                    <ChartCard title="Order Status">
+                    <ChartCard title="Estado de Pedidos">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
@@ -327,14 +328,14 @@ export default function AdminReports() {
 
             {/* Top Customers Table (Mini) */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                <h3 className="font-bold text-gray-800 mb-6">Top Performing Customers</h3>
+                <h3 className="font-bold text-gray-800 mb-6">Mejores Clientes</h3>
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-gray-50/50 border-b border-gray-100">
                             <tr>
-                                <th className="text-left py-3 px-4 text-xs font-bold text-gray-500 uppercase">Customer</th>
-                                <th className="text-right py-3 px-4 text-xs font-bold text-gray-500 uppercase">Total Spent</th>
-                                <th className="text-right py-3 px-4 text-xs font-bold text-gray-500 uppercase">Action</th>
+                                <th className="text-left py-3 px-4 text-xs font-bold text-gray-500 uppercase">Cliente</th>
+                                <th className="text-right py-3 px-4 text-xs font-bold text-gray-500 uppercase">Gasto Total</th>
+                                <th className="text-right py-3 px-4 text-xs font-bold text-gray-500 uppercase">Acción</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -352,13 +353,13 @@ export default function AdminReports() {
                                         <span className="font-black text-gray-900">${customer.total.toFixed(2)}</span>
                                     </td>
                                     <td className="py-4 px-4 text-right">
-                                        <button className="text-primary text-xs font-bold hover:underline">View Profile</button>
+                                        <button className="text-primary text-xs font-bold hover:underline">Ver Perfil</button>
                                     </td>
                                 </tr>
                             ))}
                             {topCustomers.length === 0 && (
                                 <tr>
-                                    <td colSpan={3} className="text-center py-4 text-gray-500">No data available</td>
+                                    <td colSpan={3} className="text-center py-4 text-gray-500">No hay datos disponibles</td>
                                 </tr>
                             )}
                         </tbody>

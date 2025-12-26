@@ -121,7 +121,7 @@ export default function AdminLoginPage() {
                 </div>
 
                 <p className="text-center text-gray-600 text-xs mt-8">
-                    &copy; {new Date().getFullYear()} FunkoShop Admin Panel. All rights reserved.
+                    &copy; {new Date().getFullYear()} FunkoShop Panel Admin. Todos los derechos reservados.
                 </p>
             </div>
         </div>

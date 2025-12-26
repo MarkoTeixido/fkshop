@@ -15,9 +15,10 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
                     <tr className="border-b border-gray-100">
                         <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[5%]">ID</th>
                         <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[10%]">Código</th>
-                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[35%]">Nombre del Producto</th>
-                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[25%]">Categoria</th>
-                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[15%]">Stock</th>
+                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[30%]">Nombre del Producto</th>
+                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[20%]">Categoria</th>
+                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[15%]">Precio</th>
+                        <th className="py-3 font-bold uppercase text-xs text-gray-500 w-[10%]">Stock</th>
                         <th className="py-3 w-[10%]"></th>
                     </tr>
                 </thead>
@@ -29,6 +30,7 @@ export default function ProductTable({ products, onDelete }: ProductTableProps) 
                             <td className="py-3">{p.product_name}</td>
                             {/* Assuming some join or optional chaining if not populated */}
                             <td className="py-3">{(p as any).Category?.category_name || (p as any).category_name || 'N/A'}</td>
+                            <td className="py-3 text-gray-900">${Number(p.price).toFixed(2)}</td>
                             <td className="py-3">{p.stock}</td>
                             <td className="py-3 flex gap-2 justify-end">
                                 <Link
