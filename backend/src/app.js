@@ -4,11 +4,11 @@ const methodOverride = require('method-override');
 const cookieSession = require('cookie-session');
 
 // Routes imports
-const mainRoutes = require('./router/mainRoutes');
-const shopRoutes = require('./router/shopRoutes');
-const adminRoutes = require('./router/adminRoutes');
-const authRoutes = require('./router/authRoutes');
-const wishlistRoutes = require('./routes/wishlistRoutes');
+const mainRoutes = require('./routes/main');
+const shopRoutes = require('./routes/shop');
+const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
+const wishlistRoutes = require('./routes/shop/wishlistRoutes');
 
 const app = express();
 

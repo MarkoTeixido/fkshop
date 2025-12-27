@@ -12,8 +12,8 @@ export const productService = {
     },
 
     getHomeProducts: async (): Promise<HomeProductResponse[]> => {
-        const response = await api.get<HomeProductResponse[]>('/home');
-        return response.data;
+        const response = await api.get<any>('/home');
+        return response.data.data || response.data;
     },
 
     getCategories: async (): Promise<{ licence_id: number, licence_name: string }[]> => {

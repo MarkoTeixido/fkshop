@@ -1,6 +1,6 @@
 require('dotenv').config();
 const app = require('./src/app');
-const cronService = require('./src/services/cronService');
+const cronService = require('./src/services/common/cronService');
 
 // Start Background Jobs
 cronService.start();
