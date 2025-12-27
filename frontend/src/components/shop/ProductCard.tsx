@@ -8,7 +8,7 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useWishlist } from '@/context/WishlistContext';
 import { useState } from 'react';
 
-interface ProductCardProps {
+export interface ProductCardProps {
     id: number;
     category: string;
     name: string;

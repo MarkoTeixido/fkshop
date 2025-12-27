@@ -2,7 +2,7 @@ export interface Product {
     product_id: number;
     product_name: string;
     product_description: string;
-    price: number | string; // Decimal often comes as string from API/DB, but valid logic treats as number
+    price: number | string;
     stock: number;
     discount: number | null;
     discount_end_date: string | null; // ISO Date string
@@ -21,6 +21,9 @@ export interface Product {
     category?: string;
     Licence?: Licence; // Backend often sends capitalized Licence object
     category_name?: string;
+    Category?: {
+        category_name: string;
+    };
 }
 
 export interface ProductDTO extends Omit<Product, 'product_id' | 'created_at' | 'updated_at'> {
@@ -38,4 +41,17 @@ export interface Licence {
     licence_name: string;
     licence_description?: string;
     licence_image?: string;
+}
+export interface HomeProductResponse {
+    product_id: number;
+    product_name: string;
+    price: number | string;
+    image_front: string;
+    image_back: string;
+    discount: number | null;
+    created_at: string;
+    stock: number;
+    licence?: {
+        licence_name: string;
+    };
 }

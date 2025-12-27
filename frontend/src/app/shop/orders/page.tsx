@@ -1,81 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { FaBoxOpen, FaBan, FaTruckFast } from "react-icons/fa6"; // Icons for UI
+import { useShopAccount } from "@/hooks/useShopAccount";
+import { getShopStatusColor, getStatusLabel, formatCurrency } from "@/utils/order.utils";
+import { FaBoxOpen, FaBan, FaTruckFast } from "react-icons/fa6";
 
 export default function OrdersPage() {
-    const { token, user } = useAuth();
-    const router = useRouter();
-    const [orders, setOrders] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { orders, loading, cancelOrder } = useShopAccount();
 
-    const fetchOrders = useCallback(async () => {
-        if (!token) return;
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/orders`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setOrders(data);
-            }
-        } catch (error) {
-            console.error("Error fetching orders:", error);
-        } finally {
-            setLoading(false);
-        }
-    }, [token]);
-
-    useEffect(() => {
-        if (!user && !loading) { // Check specific conditions
-            // router.push("/login"); // handled by AuthContext protection usually, but ok here
-        }
-        if (token) {
-            fetchOrders();
-        } else if (user === null) {
-            router.push("/login");
-        }
-    }, [user, token, router, fetchOrders, loading]);
-
-
-    const handleCancelOrder = async (orderId: number) => {
-        if (!confirm("¿Estás seguro de que deseas cancelar este pedido?")) return;
-
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/orders/${orderId}/cancel`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (res.ok) {
-                alert("Pedido cancelado exitosamente.");
-                fetchOrders(); // Refresh
-            } else {
-                const err = await res.json();
-                alert(`Error: ${err.message || "No se pudo cancelar el pedido"}`);
-            }
-        } catch (error) {
-            console.error("Error cancelling order:", error);
-            alert("Error al intentar cancelar el pedido.");
-        }
-    };
-
-    const getStatusInfo = (status: string) => {
-        switch (status) {
-            case 'pending': return { label: 'Pendiente de Pago', color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' };
-            case 'paid': return { label: 'Pagado', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' };
-            case 'processing': return { label: 'Preparando', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' };
-            case 'shipped': return { label: 'Enviado', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' };
-            case 'completed': return { label: 'Completado', color: 'bg-green-500/10 text-green-400 border-green-500/20' };
-            case 'cancelled': return { label: 'Cancelado', color: 'bg-red-500/10 text-red-500 border-red-500/20' };
-            case 'delivered': return { label: 'Entregado', color: 'bg-green-500/10 text-green-400 border-green-500/20' };
-            default: return { label: status, color: 'bg-gray-500/10 text-gray-400 border-gray-500/20' };
-        }
+    const handleCancelOrder = (orderId: number) => {
+        cancelOrder(orderId);
     };
 
     if (loading) {
@@ -120,8 +53,8 @@ export default function OrdersPage() {
                                 <div className="flex flex-col gap-1 w-full md:w-auto">
                                     <div className="flex flex-wrap items-center gap-3 mb-1">
                                         <h3 className="text-xl md:text-2xl font-bold text-white tracking-wide">Orden #{order.order_number || order.order_id}</h3>
-                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest border ${getStatusInfo(order.status).color}`}>
-                                            {getStatusInfo(order.status).label}
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest border ${getShopStatusColor(order.status)}`}>
+                                            {getStatusLabel(order.status)}
                                         </span>
                                     </div>
                                     <p className="text-sm md:text-base text-gray-400 font-medium">{new Date(order.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -138,7 +71,7 @@ export default function OrdersPage() {
                                 <div className="flex flex-row md:flex-col justify-between md:justify-end items-center md:items-end w-full md:w-auto gap-2 md:gap-1 mt-2 md:mt-0">
                                     <div className="text-right">
                                         <p className="hidden md:block text-xs text-gray-400 uppercase tracking-widest mb-0.5">Total</p>
-                                        <p className="text-2xl md:text-3xl font-light text-primary tracking-tight">$ {order.total_amount}</p>
+                                        <p className="text-2xl md:text-3xl font-light text-primary tracking-tight">{formatCurrency(order.total_amount)}</p>
                                     </div>
 
                                     {/* Action Buttons */}
@@ -160,7 +93,7 @@ export default function OrdersPage() {
                                             <span className="text-primary font-bold text-sm md:text-base shrink-0">{item.quantity}x</span>
                                             <span className="text-gray-300 font-light text-sm md:text-base truncate">{item.product_name}</span>
                                         </div>
-                                        <span className="text-white font-medium text-sm md:text-base whitespace-nowrap ml-4">$ {item.subtotal}</span>
+                                        <span className="text-white font-medium text-sm md:text-base whitespace-nowrap ml-4">{formatCurrency(item.subtotal)}</span>
                                     </div>
                                 ))}
                             </div>

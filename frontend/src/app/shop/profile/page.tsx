@@ -1,133 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaUser, FaBoxOpen, FaSignOutAlt, FaCalendarAlt, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import Image from "next/image";
-
-interface Order {
-    order_id: number;
-    order_number: string;
-    total_amount: string;
-    status: string;
-    created_at: string;
-    OrderItems: {
-        order_item_id: number;
-        product_name: string;
-        quantity: number;
-        unit_price: string;
-    }[];
-}
-
-const statusColors: any = {
-    pending: "bg-yellow-500/20 text-yellow-500 border-yellow-500/50",
-    processing: "bg-blue-500/20 text-blue-500 border-blue-500/50",
-    shipped: "bg-purple-500/20 text-purple-500 border-purple-500/50",
-    delivered: "bg-green-500/20 text-green-500 border-green-500/50",
-    cancelled: "bg-red-500/20 text-red-500 border-red-500/50",
-    completed: "bg-green-500/20 text-green-500 border-green-500/50"
-};
-
-const statusLabels: any = {
-    pending: "Pendiente",
-    processing: "Procesando",
-    shipped: "Enviado",
-    delivered: "Entregado",
-    cancelled: "Cancelado",
-    completed: "Completado"
-};
+import { FaBoxOpen, FaSignOutAlt, FaCalendarAlt, FaEnvelope, FaPhone } from "react-icons/fa";
+import { useShopAccount } from "@/hooks/useShopAccount";
+import { getShopStatusColor, getStatusLabel } from "@/utils/order.utils";
 
 export default function ProfilePage() {
-    // @ts-ignore
-    const { user, loginAuth, logout } = useAuth(); // Assuming login updates the context state too if needed
     const router = useRouter();
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { profile, orders, loading, msg, logout } = useShopAccount();
+
     const [formData, setFormData] = useState({
         name: "",
         lastname: "",
         email: "",
         phone: ""
     });
-    const [isEditing, setIsEditing] = useState(false);
-    const [msg, setMsg] = useState("");
 
-    // Use token from utils to reliably get it
-    const token = typeof window !== 'undefined' ? localStorage.getItem('funkoshop_token') : null;
-
+    // Sync formData with profile when loaded
     useEffect(() => {
-        if (!token) {
-            router.push("/shop/login");
-            return;
+        if (profile) {
+            setFormData(profile);
         }
-
-        const fetchProfileData = async () => {
-            setLoading(true);
-            try {
-                // Fetch User Details
-                const profileRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (profileRes.ok) {
-                    const data = await profileRes.json();
-                    setFormData({
-                        name: data.name || "",
-                        lastname: data.lastname || "",
-                        email: data.email || "",
-                        phone: data.phone || ""
-                    });
-                }
-
-                // Fetch Orders
-                const ordersRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shop/orders`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (ordersRes.ok) {
-                    const data = await ordersRes.json();
-                    setOrders(data);
-                }
-
-            } catch (error) {
-                console.error("Error fetching data", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProfileData();
-    }, [token, router]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profile]);
 
     const handleLogout = () => {
         logout();
         router.push("/shop/login");
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setMsg("");
-
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (res.ok) {
-                setMsg("Perfil actualizado correctamente");
-                setTimeout(() => setIsEditing(false), 1500);
-            } else {
-                setMsg("Error al actualizar perfil");
-            }
-        } catch (error) {
-            console.error(error);
-            setMsg("Error de conexión");
-        }
     };
 
     if (loading) {
@@ -206,7 +107,7 @@ export default function ProfilePage() {
                         >
                             <div className="flex flex-col items-center mb-8">
                                 <div className="w-32 h-32 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30 border-4 border-dark-bg">
-                                    <span className="text-4xl font-bold uppercase">{formData.name.charAt(0)}{formData.lastname.charAt(0)}</span>
+                                    <span className="text-4xl font-bold uppercase">{formData.name ? formData.name.charAt(0) : ''}{formData.lastname ? formData.lastname.charAt(0) : ''}</span>
                                 </div>
                                 <h2 className="text-2xl font-bold text-white uppercase text-center mb-1">{formData.name} {formData.lastname}</h2>
                                 <p className="text-gray-400 text-sm">Miembro FunkoClub</p>
@@ -237,6 +138,12 @@ export default function ProfilePage() {
                                     <FaSignOutAlt /> Cerrar Sesión
                                 </button>
                             </div>
+
+                            {msg && (
+                                <div className={`mt-4 p-3 rounded-lg text-sm text-center font-bold ${msg.includes('error') ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400'}`}>
+                                    {msg}
+                                </div>
+                            )}
                         </motion.div>
                     </div>
 
@@ -284,9 +191,9 @@ export default function ProfilePage() {
                                             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
                                                 <div>
                                                     <div className="flex items-center gap-3 mb-1">
-                                                        <span className="font-black text-xl text-white tracking-wider">#{order.order_number}</span>
-                                                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border ${statusColors[order.status] || "bg-gray-500/20 text-gray-500 border-gray-500/50"}`}>
-                                                            {statusLabels[order.status] || order.status}
+                                                        <span className="font-black text-xl text-white tracking-wider">#{order.order_number || order.order_id}</span>
+                                                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border ${getShopStatusColor(order.status)}`}>
+                                                            {getStatusLabel(order.status)}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-gray-400 text-sm">
@@ -304,7 +211,7 @@ export default function ProfilePage() {
                                             {/* Order Items Preview */}
                                             <div className="bg-black/20 rounded-xl p-4">
                                                 <div className="space-y-3">
-                                                    {order.OrderItems.map((item) => (
+                                                    {order.OrderItems?.map((item: any) => (
                                                         <div key={item.order_item_id} className="flex justify-between items-center text-sm">
                                                             <div className="flex items-center gap-2">
                                                                 <span className="w-5 h-5 flex items-center justify-center bg-white/10 rounded-full text-[10px] font-bold text-primary">

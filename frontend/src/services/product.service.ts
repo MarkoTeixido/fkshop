@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Product, ProductDTO } from '@/types/product.types';
+import { Product, ProductDTO, HomeProductResponse } from '@/types/product.types';
 import { PaginatedResponse } from '@/types/api.types';
 
 export const productService = {
@@ -9,6 +9,11 @@ export const productService = {
         // Assuming /shop returns list.
         const response = await api.get<PaginatedResponse<Product>>('/shop', { params });
         return response.data; // return data array
+    },
+
+    getHomeProducts: async (): Promise<HomeProductResponse[]> => {
+        const response = await api.get<HomeProductResponse[]>('/home');
+        return response.data;
     },
 
     getCategories: async (): Promise<{ licence_id: number, licence_name: string }[]> => {

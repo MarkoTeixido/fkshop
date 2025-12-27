@@ -1,82 +1,21 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { wishlistService } from '@/services/wishlist.service';
-import ProductCard from '@/components/ProductCard';
+import React, { useEffect } from 'react';
+import ProductCard from '@/components/shop/ProductCard';
 import { useAuth } from '@/context/AuthContext';
-import { useWishlist } from '@/context/WishlistContext';
 import { useRouter } from 'next/navigation';
 import { FaHeart } from 'react-icons/fa6';
-import { Product } from '@/types/product.types';
-
-// Interface for the Wishlist Item structure returned by backend
-interface WishlistItem {
-    id: number;
-    user_id: number;
-    product_id: number;
-    product: Product;
-}
+import { useWishlistItems } from '@/hooks/useWishlistItems';
 
 export default function WishlistPage() {
-    const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
     const { user, isAuthenticated } = useAuth();
-    const { wishlistIds } = useWishlist(); // Get IDs from context
     const router = useRouter();
+    const { wishlistItems, loading } = useWishlistItems(isAuthenticated);
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
             router.push('/shop/login');
         }
     }, [isAuthenticated, loading, router]);
-
-    // Sync local items with global context IDs (handles removals from card interaction)
-    useEffect(() => {
-        if (wishlistItems.length > 0 && wishlistIds.length < wishlistItems.length) {
-            setWishlistItems(prev => prev.filter(item => wishlistIds.includes(item.product_id)));
-        }
-    }, [wishlistIds]);
-
-    useEffect(() => {
-        const fetchWishlist = async () => {
-            // If we don't have a user token yet (initial load), wait or handle it.
-            // But assuming AuthContext handles initial load.
-            try {
-                const data = await wishlistService.getWishlist();
-                console.log("Wishlist Data Raw:", data); // Debugging
-                // Map the backend response to extract the nested product
-                // items: [{ product: { ... } }, ...]
-                const products = (data as any[])
-                    .filter(item => item && (item.product || item.Product)) // Filter out items with null/undefined products
-                    .map((item: any) => {
-                        // The backend includes 'product' (or 'Product' depending on Sequelize alias) 
-                        const p = item.product || item.Product;
-
-                        return {
-                            ...p,
-                            // Ensure category is a string if ProductCard needs it
-                            // The backend 'product' model includes 'licence' object
-                            category_name: p.licence ? p.licence.licence_name :
-                                (p.Licence ? p.Licence.licence_name :
-                                    (p.category ? p.category.category_name : 'GENERIC'))
-                        };
-                    });
-                setWishlistItems(products);
-            } catch (error) {
-                console.error("Error fetching wishlist:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (isAuthenticated) {
-            fetchWishlist();
-        } else {
-            // Allow auth check to redirect
-            // semi-loading state usually handled by auth provider, but simple timeout fallback
-            const timer = setTimeout(() => setLoading(false), 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [isAuthenticated]);
 
     if (loading) {
         return (
@@ -103,7 +42,7 @@ export default function WishlistPage() {
         );
     }
 
-    if (!user) return null; // Will redirect via useEffect
+    if (!user) return null;
 
     return (
         <div className="bg-dark-bg min-h-screen">
@@ -147,7 +86,7 @@ export default function WishlistPage() {
                             <ProductCard
                                 key={p.product_id}
                                 id={p.product_id}
-                                category={(p as any).licence?.licence_name || (p as any).Licence?.licence_name || 'COLLECTIBLE'}
+                                category={(p as any).licence?.licence_name || (p as any).Licence?.licence_name || p.category_name || 'COLLECTIBLE'}
                                 name={p.product_name}
                                 price={p.price}
                                 imageFront={p.image_front || 'https://res.cloudinary.com/dp7jr9k94/image/upload/v1703182285/ironman_front_placeholder.png'}

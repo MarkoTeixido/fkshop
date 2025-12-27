@@ -23,20 +23,13 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     // Load wishlist on mount or user change
     useEffect(() => {
         if (user) {
-            loadWishlist();
+            wishlistService.getWishlistIds()
+                .then(setWishlistIds)
+                .catch(error => console.error("Failed to load wishlist", error));
         } else {
             setWishlistIds([]);
         }
     }, [user]);
-
-    const loadWishlist = async () => {
-        try {
-            const ids = await wishlistService.getWishlistIds();
-            setWishlistIds(ids);
-        } catch (error) {
-            console.error("Failed to load wishlist", error);
-        }
-    };
 
     const addToWishlist = async (id: number) => {
         if (!user) {

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 import { FaUser, FaLock, FaCircleNotch } from "react-icons/fa6";
@@ -11,7 +11,7 @@ export default function AdminLoginPage() {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { login } = useAdminAuth();
-    const router = useRouter();
+    // const router = useRouter(); // Removed unused
 
     const handleExampleAdmin = () => {
         setEmail('admin@funkoshop.com');
@@ -33,6 +33,7 @@ export default function AdminLoginPage() {
             const data = await res.json();
 
             if (res.ok) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 login(data.token, (data as any).user || data.user, '/admin/dashboard');
             } else {
                 setError('Credenciales inválidas. Verifica tus datos.');
