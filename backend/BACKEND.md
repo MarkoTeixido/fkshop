@@ -1,73 +1,86 @@
 # Funkoshop Backend
 
-Este directorio contiene la lógica del servidor (API) para la aplicación E-Commerce **Funkoshop**. Está construido sobre **Node.js** utilizando **Express** y sigue una arquitectura en capas (N-Tier) para asegurar escalabilidad y mantenibilidad.
+Este directorio contiene la lógica del servidor (API) para la aplicación E-Commerce **Funkoshop**. Está construido sobre **Node.js** utilizando **Express** y ha sido refactorizado para seguir estrictamente una **Arquitectura en Capas** y principios **SOLID**, asegurando alta mantenibilidad, escalabilidad y un código limpio.
 
 ## 🛠 Tecnologías Utilizadas
 
-El proyecto utiliza las siguientes librerías y herramientas principales:
-
 - **Core**:
-  - `express`: Framework web para Node.js.
+  - `express`: Framework web.
   - `dotenv`: Manejo de variables de entorno.
 - **Base de Datos**:
-  - `mysql2`: Cliente MySQL para Node.js.
-  - `sequelize`: ORM (Object-Relational Mapper) para interactuar con la base de datos de manera orientada a objetos.
-- **Seguridad & Autenticación**:
-  - `bcryptjs`: Hashing de contraseñas.
-  - `jsonwebtoken` (JWT): Generación y validación de tokens de sesión.
-  - `cookie-session` / `express-session`: Manejo de sesiones de usuario.
-  - `cors`: Habilitar solicitudes de recursos cruzados (Cross-Origin Resource Sharing).
-- **Validación & Utilidades**:
-  - `express-validator`: Middleware para validar datos de entrada en las rutas.
-  - `method-override`: Permite usar verbos HTTP como PUT o DELETE en lugares donde el cliente no lo soporta nativamente (ej. formularios HTML simples).
-- **Desarrollo**:
-  - `nodemon`: Reinicia el servidor automáticamente ante cambios en el código.
+  - `mysql2`: Cliente MySQL.
+  - `sequelize`: ORM para modelado de datos y consultas.
+- **Seguridad**:
+  - `bcryptjs`: Hashing seguro de contraseñas.
+  - `jsonwebtoken` (JWT): Autenticación stateless segura.
+  - `cookie-session`: Manejo de sesiones (legacy support).
+  - `cors`: Configuración de acceso cruzado.
+- **Validación & Utils**:
+  - `express-validator`: Validación robusta de datos de entrada.
+  - `method-override`: Soporte para verbos HTTP en clientes antiguos.
 
-## 📂 Estructura del Proyecto
+## 🏛 Arquitectura del Proyecto
 
-La estructura sigue el patrón **MVC** con una separación adicional de preocupaciones mediante Servicios y Repositorios.
+El proyecto sigue una **Arquitectura en Capas (Layered Architecture)**, separando claramente las responsabilidades. Ya no se utilizan controladores monolíticos; cada componente tiene una única responsabilidad.
+
+### 📂 Estructura de Directorios
 
 ```text
 backend/
-├── .env                  # Variables de entorno (no incluido en repo)
-├── funkoshopdb.sql       # Script SQL inicial para la base de datos
-├── server.js             # Punto de entrada del servidor
 ├── src/
-│   ├── app.js            # Configuración de la aplicación Express
-│   ├── config/           # Configuración de la DB y Sequelize
-│   ├── controllers/      # Controladores (Manejan Request/Response)
-│   ├── middlewares/      # Middlewares (Auth, Error Handler, Logging)
-│   ├── models/           # Definiciones de modelos Sequelize
-│   ├── repositories/     # Capa de acceso a datos (Queries directas a DB/ORM)
-│   ├── router/           # Definición de rutas (Endpoints)
-│   ├── services/         # Lógica de negocio pura
-│   └── utils/            # Utilidades generales
+│   ├── app.js               # Configuración principal de Express
+│   ├── config/              # Configuración de DB y Sequelize
+│   ├── controllers/         # CAPA DE PRESENTACIÓN: Maneja Requests y Responses
+│   │   ├── admin/           # Controladores para panel de administración
+│   │   ├── auth/            # Controladores de autenticación y perfil
+│   │   ├── common/          # Controladores compartidos (categorías, licencias)
+│   │   └── shop/            # Controladores para la tienda pública y carrito
+│   ├── services/            # CAPA DE NEGOCIO: Lógica pura, sin req/res ni SQL directo
+│   │   ├── admin/           # Servicios específicos de administración
+│   │   ├── auth/            # Lógica de login, registro, tokens
+│   │   ├── common/          # Lógica básica
+│   │   └── shop/            # Lógica de compras, carrito y catálogo
+│   ├── repositories/        # CAPA DE DATOS: Acceso a DB (Sequelize), queries puras
+│   ├── models/              # Definiciones de modelos Sequelize (Tablas)
+│   ├── routes/              # Definición de rutas (Endpoints) agrupadas por módulo
+│   ├── middlewares/         # Autenticación, validación, manejo de errores
+│   └── utils/               # Constantes, helpers, clases de error custom
 ```
 
-### Flujo de la Información
-1. **Router**: Recibe la petición HTTP y la dirige al controlador correspondiente.
-2. **Controller**: Extrae los datos de la petición, valida la entrada y llama al Servicio.
-3. **Service**: Contiene la lógica de negocio. Si necesita datos, llama al Repositorio.
-4. **Repository**: Interactúa con la base de datos (Models/Sequelize) para obtener o guardar data.
+### 📐 Principios de Diseño Aplicados
 
-## 🚀 Instalación y Configuración Local
+1.  **Single Responsibility Principle (SRP)**:
+    -   Cada controlador maneja un recurso específico.
+    -   Cada servicio contiene solo lógica de negocio de su dominio.
+    -   Cada repositorio encapsula todas las queries a la base de datos de su entidad.
+2.  **Separation of Concerns (SoC)**:
+    -   Los **Controladores** NO contienen lógica de negocio ni acceso a DB. Solo validan input y formatean output.
+    -   Los **Servicios** NO saben de HTTP (req/res) ni de SQL. Reciben datos puros y devuelven datos puros.
+    -   Los **Repositorios** NO saben de negocio. Solo ejecutan operaciones CRUD y queries complejas.
+3.  **Dependency Rule**: Las dependencias apuntan hacia adentro o hacia capas inferiores (Controller -> Service -> Repository).
 
-Sigue estos pasos para levantar el backend en tu entorno local.
+---
 
-### 1. Prerrequisitos
-- Tener instalado **Node.js** (v14 o superior).
-- Tener instalado **MySQL** y el servicio corriendo.
+## 🚀 Guía de Desarrollo
 
-### 2. Instalación de Dependencias
-Navega a la carpeta `backend` e instala los paquetes:
+### Rutas
+Las rutas están modularizadas en `src/routes/`:
+- `/admin`: Rutas protegidas para el panel de administración.
+- `/shop`: Rutas públicas de la tienda y privadas del usuario (carrito, perfil).
+- `/auth`: Login, registro y logout.
 
-```bash
-cd backend
-npm install
-```
+### Flujo de una Petición (Ejemplo: Crear Producto)
+1.  **Route** (`routes/admin/productRoutes.js`): Recibe `POST /products`. Ejecuta middlewares de auth y validación.
+2.  **Controller** (`controllers/admin/productController.js`): Recibe los datos limpios. Llama a `productService.createProduct(data)`.
+3.  **Service** (`services/admin/productService.js`): Aplica reglas de negocio (ej. validar duplicados lógicos). Llama a `productRepository.create(data)`.
+4.  **Repository** (`repositories/productRepository.js`): Ejecuta `model.create(data)` con Sequelize. Retorna la entidad creada.
 
-### 3. Configuración de Variables de Entorno
-Crea un archivo `.env` en la raíz de la carpeta `backend` basándote en las claves usadas en el proyecto:
+---
+
+## 🔧 Instalación y Ejecución
+
+### 1. Variables de Entorno (.env)
+Asegúrate de tener configurado tu archivo `.env` en `backend/`:
 
 ```env
 PORT=3000
@@ -75,45 +88,15 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASS=tu_password
 DB_NAME=funkoshop
-DB_PORT=3306
-SESSION_SECRET_1=clave_secreta_1
-SESSION_SECRET_2=clave_secreta_2
-JWT_SECRET=tu_jwt_secret
+JWT_SECRET=tu_secreto_super_seguro
+# ... otras configuraciones
 ```
 
-### 4. Base de Datos
-Tienes dos opciones para inicializar la base de datos:
-
-**Opción A: Script SQL**
-Importa el archivo `funkoshopdb.sql` en tu gestor de base de datos (MySQL Workbench, DBeaver, etc.).
-
-**Opción B: Sincronización Sequelize**
-El proyecto está configurado para intentar sincronizar los modelos al iniciar (`conn.js`). Asegúrate de que la base de datos `funkoshop` (o el nombre que hayas puesto en `.env`) exista en tu servidor MySQL.
-
-> **Nota**: `sequelize.sync()` puede crear las tablas si no existen, pero asegúrate de tener la DB creada.
-
-### 5. Ejecutar el Servidor
-
-Para desarrollo (con recarga automática):
+### 2. Iniciar Servidor
 ```bash
+# Desarrollo
 npm run dev
-```
 
-Para producción:
-```bash
+# Producción
 npm start
 ```
-
-El servidor debería iniciar en: `http://localhost:3000` (o el puerto que hayas configurado).
-
-## ✅ Pruebas (Testing)
-
-Puedes probar los endpoints utilizando herramientas como **Postman** o **Insomnia**.
-
-Ejemplos de rutas base:
-- `GET /shop/items` - Listar productos.
-- `POST /auth/login` - Iniciar sesión.
-- `GET /admin/dashboard` - Panel de administración (requiere autenticación).
-
-### Autenticación
-El sistema utiliza sesiones/cookies y JWT. Para probar rutas protegidas en Postman, asegúrate de que el login haya establecido correctamente la cookie de sesión o envía el token correspondiente si el endpoint lo requiere explícitamente en headers (aunque este backend parece priorizar sesiones por cookie).

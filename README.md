@@ -2,32 +2,32 @@
 
 ¡Bienvenido a Funkoshop!
 
-Esta es una aplicación web moderna que simula un E-Commerce real de figuras coleccionables. El proyecto ha evolucionado a una arquitectura separada (Frontend y Backend) para ofrecer una experiencia más robusta, escalable y dinámica.
+Esta es una aplicación web moderna que simula un E-Commerce real de figuras coleccionables. El proyecto ha evolucionado a una arquitectura separada (**Frontend** y **Backend**) para ofrecer una experiencia más robusta, escalable y dinámica, siguiendo las mejores prácticas de desarrollo.
 
 Ofrece funcionalidades completas de búsqueda, filtrado, carrito de compras y panel de administración para la gestión de productos (CRUD, Actividad y Reportes).
 
-![377shots_so](https://github.com/MarkoTeixido/FunkoshopCaC-Backend/assets/89801822/d0f4e578-46e3-47e7-a9dc-1922f162e6e4)
-![373shots_so](https://github.com/MarkoTeixido/FunkoshopCaC-Backend/assets/89801822/5ec3d463-f93c-413f-88e0-4f2decc3a982)
-![118shots_so](https://github.com/MarkoTeixido/FunkoshopCaC-Backend/assets/89801822/8a8ec40a-8bc6-4a6e-96ca-d051ea5d5c15)
+![377shots_so](https://res.cloudinary.com/dp7jr9k94/image/upload/v1766876304/994shots_so_uu8ucw.png)
+![373shots_so](https://res.cloudinary.com/dp7jr9k94/image/upload/v1766876471/643shots_so_ddh9gs.png)
+![118shots_so](https://res.cloudinary.com/dp7jr9k94/image/upload/v1766876445/558shots_so_qwhk79.png)
 
 ## Stack de Tecnologías 🎇
 
-El proyecto está dividido en dos grandes áreas:
+El proyecto está dividido en dos grandes áreas, siguiendo una arquitectura Cliente-Servidor:
 
 ### Frontend (Cliente)
-- **Framework:** Next.js (App Router)
+- **Framework:** Next.js 14 (App Router)
 - **Lenguaje:** TypeScript
-- **Estilos:** Tailwind CSS
-- **Estado:** React Hooks
-- **Librerías:** Axios, Swiper, SweetAlert2
+- **Estilos:** Tailwind CSS 3
+- **Estado Global:** Context API + Hooks
+- **Librerías:** Axios (HTTP), Swiper (Carruseles), React Icons.
 
 ### Backend (Servidor)
 - **Entorno:** Node.js
-- **Framework:** Express
+- **Framework:** Express.js
+- **Arquitectura:** N-Tier (Capas: Controllers, Services, Repositories).
 - **Base de Datos:** MySQL
 - **ORM:** Sequelize
-- **Autenticación:** JWT & Cookie Sessions
-- **Seguridad:** BcryptJS, CORS, Helmet
+- **Seguridad:** JWT, Cookie-Sessions, BcryptJS, CORS.
 
 ## Comenzando 🚀
 
@@ -35,8 +35,9 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
 
 ### Prerrequisitos
 
-> [!IMPORTANT]
-> Es necesario tener instalado **Node.js** (v18+ recomendado), **NPM** y **MySQL** en tu máquina.
+> **⚠️ IMPORTANTE**
+>
+> Es necesario tener instalado **Node.js** (v18+ recomendado), **NPM** y **MySQL** corriendo en tu máquina.
 
 ### Clonar el Repositorio
 
@@ -55,9 +56,9 @@ git clone https://github.com/MarkoTeixido/Funkoshop.git
    npm install
    ```
 
-2. Configura tu base de datos. Puedes usar el script `funkoshopdb.sql` incluido en la carpeta `backend` para crear la estructura inicial en tu gestor MySQL favorito (Workbench, DBeaver, etc.).
+2. Configura tu base de datos. Asegúrate de tener un esquema `funkoshop` creado en tu MySQL local.
 
-3. Crea un archivo `.env` en `backend/` con las credenciales:
+3. Crea un archivo `.env` en `backend/` con tus credenciales:
    ```env
    PORT=3000
    DB_HOST=localhost
@@ -68,7 +69,7 @@ git clone https://github.com/MarkoTeixido/Funkoshop.git
    JWT_SECRET=secretojwt
    ```
 
-4. Inicia el servidor:
+4. Inicia el servidor (sincronizará las tablas automáticamente):
    ```bash
    npm run dev
    ```
@@ -83,7 +84,7 @@ git clone https://github.com/MarkoTeixido/Funkoshop.git
    npm install
    ```
 
-2. Crea un archivo `.env.local` en `frontend/` para conectar con el backend:
+2. Crea un archivo `.env.local` en `frontend/` para conectar con el backend (opcional si usas defaults):
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:3000
    ```
@@ -93,13 +94,14 @@ git clone https://github.com/MarkoTeixido/Funkoshop.git
    npm run dev
    ```
 
-¡Listo! Accede a la aplicación en `http://localhost:3000` (o el puerto que indique Next.js).
+¡Listo! Accede a la aplicación en `http://localhost:3001` (o el puerto que indique Next.js).
 
 ## Documentación Detallada 📚
 
-Para más detalles sobre cada parte del proyecto, consulta los archivos específicos:
-- [Documentación Backend](./backend/BACKEND.md)
-- [Documentación Frontend](./frontend/FRONTEND.md)
+Para profundizar en la arquitectura y estructura de cada parte, consulta los README específicos:
+
+- [Documentación Backend](./backend/BACKEND.md) - Arquitectura, Endpoints y Estructura.
+- [Documentación Frontend](./frontend/README.md) - Componentes, Estilos y App Router.
 
 ## Autor
 
