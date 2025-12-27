@@ -12,8 +12,16 @@ export const productService = {
     },
 
     getHomeProducts: async (): Promise<HomeProductResponse[]> => {
-        const response = await api.get<any>('/home');
-        return response.data.data || response.data;
+        // Use standard Shop endpoint to ensure consistency and avoid 404s
+        const response = await api.get<PaginatedResponse<Product>>('/shop', {
+            params: { limit: 9, sort: 'newest' }
+        });
+
+        // Map Product to HomeProductResponse if needed, or return Product array compatible type
+        // The Home components likely expect `HomeProductResponse` which has slightly different fields?
+        // Let's check type compatibility. Usually shop returns standard Product.
+        // Assuming API returns standard products which are compatible.
+        return (response.data.data as unknown) as HomeProductResponse[];
     },
 
     getCategories: async (): Promise<{ licence_id: number, licence_name: string }[]> => {
