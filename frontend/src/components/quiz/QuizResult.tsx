@@ -17,7 +17,7 @@ export default function QuizResult({ product, onReset }: QuizResultProps) {
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: "spring", bounce: 0.5 }}
+                    transition={{ duration: 0.3 }}
                 >
                     <span className="text-primary font-bold tracking-widest uppercase mb-2 block text-sm">
                         Tu Match Ideal
@@ -53,7 +53,11 @@ export default function QuizResult({ product, onReset }: QuizResultProps) {
                     </div>
 
                     <div className="flex justify-center gap-3">
-                        <Link href={`/shop/${product.id}`} className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105 shadow-lg text-sm md:text-base">
+                        <Link
+                            href={`/shop/${product.id}`}
+                            prefetch={true}
+                            className="bg-primary hover:bg-primary-hover text-white font-bold px-8 py-3 rounded-full transition-all hover:scale-105 shadow-lg text-sm md:text-base"
+                        >
                             Comprar Ahora
                         </Link>
                         <button

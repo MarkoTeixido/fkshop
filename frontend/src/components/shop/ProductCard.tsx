@@ -102,6 +102,7 @@ export default function ProductCard({ id, category, name, price, imageFront, ima
                     <button
                         onClick={toggleWishlist}
                         className="absolute left-0 top-0 z-20 p-2 text-white/50 hover:text-red-500 transition-colors"
+                        aria-label={isWishlisted ? `Quitar ${name} de favoritos` : `Agregar ${name} a favoritos`}
                     >
                         {isWishlisted ? <FaHeart size={18} className="text-red-500" /> : <FaRegHeart size={18} />}
                     </button>
@@ -128,7 +129,7 @@ export default function ProductCard({ id, category, name, price, imageFront, ima
 
                 <div className="p-3 flex flex-col flex-grow gap-1">
                     <p className="text-[10px] font-bold tracking-widest uppercase text-gray-500">{category}</p>
-                    <h4 className="text-base font-bold text-white leading-tight line-clamp-2 min-h-[36px]">{name}</h4>
+                    <h3 className="text-base font-bold text-white leading-tight line-clamp-2 min-h-[36px]">{name}</h3>
 
                     <div className="mt-auto pt-2 flex flex-col gap-2">
                         <div className="flex flex-col">

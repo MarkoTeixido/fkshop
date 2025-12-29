@@ -75,7 +75,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                         )}
 
                         {!isAdmin && (
-                            <Link href="/shop/cart" className="text-white hover:text-primary transition-colors relative group">
+                            <Link href="/shop/cart" className="text-white hover:text-primary transition-colors relative group" aria-label="Ver carrito de compras">
                                 <FaCartShopping size={20} />
                             </Link>
                         )}
@@ -83,7 +83,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                         {user ? (
                             <>
                                 {/* Mobile: Direct Link to Profile */}
-                                <Link href="/shop/profile" className="lg:hidden text-white hover:text-primary transition-colors">
+                                <Link href="/shop/profile" className="lg:hidden text-white hover:text-primary transition-colors" aria-label="Ver perfil">
                                     <FaUser size={20} />
                                 </Link>
 
@@ -94,6 +94,7 @@ export default function Header({ isAdmin = false, notificationCount = 0 }: Heade
                             <Link
                                 href="/shop/login"
                                 className="bg-primary hover:bg-primary-hover text-white text-xs font-bold p-2 lg:px-5 lg:py-2.5 rounded-full transition-all transform hover:scale-105 whitespace-nowrap flex items-center justify-center h-9 w-9 sm:w-auto sm:h-auto"
+                                aria-label="Iniciar sesión"
                             >
                                 <span className="hidden sm:inline">INICIAR SESIÓN</span>
                                 <span className="sm:hidden"><FaUser size={14} /></span>

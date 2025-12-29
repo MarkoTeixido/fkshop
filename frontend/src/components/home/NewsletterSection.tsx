@@ -24,6 +24,8 @@ export default function NewsletterSection() {
                             src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766491660/Google_AI_Studio_2025-12-23T12_07_11.596Z_r0bnhw.png"
                             alt="Club Mascot"
                             fill
+                            loading="lazy"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                             className="object-cover object-center opacity-20 md:opacity-80 mix-blend-lighten"
                         />
                     </div>

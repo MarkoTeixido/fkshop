@@ -38,6 +38,7 @@ export default function MobileMenu({ isOpen, setIsOpen, navLinks, user, isAdmin,
             <button
                 className="lg:hidden text-white z-50 p-2"
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             >
                 {isOpen ? <FaXmark size={24} /> : <FaBars size={24} />}
             </button>

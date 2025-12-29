@@ -1,10 +1,21 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HeroSection() {
     return (
         <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden">
-            {/* Background with Parallax/Gradient */}
-            <div className="absolute inset-0 bg-[url('https://res.cloudinary.com/dp7jr9k94/image/upload/v1766491205/Generated_image_1_1_c66afj.png')] bg-cover bg-center bg-fixed opacity-60 scale-105"></div>
+            {/* Optimized Background Image for LCP */}
+            <Image
+                src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766491205/Generated_image_1_1_c66afj.png"
+                alt="Hero background"
+                fill
+                priority
+                fetchPriority="high"
+                quality={90}
+                sizes="100vw"
+                className="object-cover object-center opacity-60 scale-105"
+                style={{ objectPosition: 'center' }}
+            />
             <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/30 via-transparent to-dark-bg"></div>
 
             <div className="container-custom relative z-10 flex flex-col items-start gap-6 sm:gap-8 px-6 sm:px-8">

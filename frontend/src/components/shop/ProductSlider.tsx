@@ -60,12 +60,14 @@ export default function ProductSlider({ title, products }: ProductSliderProps) {
             <button
                 ref={(node) => setPrevEl(node)}
                 className="swiper-button-prev-custom absolute top-1/2 -left-4 md:-left-8 z-20 -translate-y-1/2 w-12 h-12 bg-dark-bg/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-primary hover:border-primary transition-all disabled:opacity-0 disabled:cursor-not-allowed group"
+                aria-label="Producto anterior"
             >
                 <RxChevronLeft size={24} className="group-hover:scale-110 transition-transform" />
             </button>
             <button
                 ref={(node) => setNextEl(node)}
                 className="swiper-button-next-custom absolute top-1/2 -right-4 md:-right-8 z-20 -translate-y-1/2 w-12 h-12 bg-dark-bg/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-primary hover:border-primary transition-all disabled:opacity-0 disabled:cursor-not-allowed group"
+                aria-label="Siguiente producto"
             >
                 <RxChevronRight size={24} className="group-hover:scale-110 transition-transform" />
             </button>

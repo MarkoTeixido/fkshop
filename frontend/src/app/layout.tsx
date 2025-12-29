@@ -6,12 +6,16 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "900"],
+  display: 'swap',
+  preload: true,
 });
 
 const raleway = Raleway({
   variable: "--font-raleway",
   subsets: ["latin"],
   weight: ["100", "300", "400", "500", "600", "700", "900"],
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -33,6 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+      </head>
       <body
         className={`${inter.variable} ${raleway.variable} antialiased`}
       >

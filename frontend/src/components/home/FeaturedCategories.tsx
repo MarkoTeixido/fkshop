@@ -8,7 +8,7 @@ export default function FeaturedCategories() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                     {/* Large Featured Card 1 */}
                     <Link href="/shop?category=STAR WARS" className="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer border border-white/5 block">
-                        <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766493611/Google_AI_Studio_2025-12-23T12_32_58.985Z_hnyk28.png" alt="Star Wars" fill className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
+                        <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766493611/Google_AI_Studio_2025-12-23T12_32_58.985Z_hnyk28.png" alt="Star Wars" fill loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                         <div className="absolute bottom-10 left-10">
                             <span className="text-primary font-bold tracking-wider mb-2 block">STAR WARS</span>
@@ -19,7 +19,7 @@ export default function FeaturedCategories() {
 
                     {/* Large Featured Card 2 */}
                     <Link href="/shop?category=POKEMON" className="group relative h-[400px] rounded-3xl overflow-hidden cursor-pointer border border-white/5 block">
-                        <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766495580/Generated_Image_December_23_2025_-_10_11AM_u3pxvj.png" alt="Pokemon" fill className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
+                        <Image src="https://res.cloudinary.com/dp7jr9k94/image/upload/v1766495580/Generated_Image_December_23_2025_-_10_11AM_u3pxvj.png" alt="Pokemon" fill loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                         <div className="absolute bottom-10 left-10">
                             <span className="text-primary font-bold tracking-wider mb-2 block">POKÉMON</span>
