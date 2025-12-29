@@ -30,7 +30,7 @@ export default function ProductSlider({ title, products }: ProductSliderProps) {
                 modules={[Navigation]}
                 spaceBetween={24}
                 slidesPerView={1}
-                loop={true}
+                loop={products.length > 5}
                 navigation={{
                     prevEl,
                     nextEl,
