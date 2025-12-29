@@ -11,7 +11,7 @@ export default function TrendingSection({ products }: TrendingSectionProps) {
         <section className="py-20 bg-dark-bg relative">
             <div className="absolute -top-20 left-0 w-full h-32 bg-gradient-to-t from-dark-bg to-transparent z-10"></div>
             <div className="container-custom">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
                     <div>
                         <h3 className="text-primary font-bold tracking-[0.2em] text-lg md:text-xl uppercase mb-1">Lanzamientos Exclusivos</h3>
                         <h2 className="text-4xl md:text-6xl font-black text-white uppercase italic leading-[0.9]">Tendencias</h2>
